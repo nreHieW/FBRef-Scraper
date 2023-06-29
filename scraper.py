@@ -1,5 +1,5 @@
 import argparse
-import json
+import os
 import datetime
 import pandas as pd
 import ScraperFC as sfc
@@ -64,18 +64,33 @@ class TeamPlayerScraper:
                     print(e)
                 
                 #save as csv
-                self._parse_columns(squad).to_csv(f'./data/Squad_{year}.csv',index=False)
-                self._parse_columns(against).to_csv(f'./data/Against_{year}.csv',index=False)
-                self._parse_columns(players).to_csv(f'./data/Players_{year}.csv',index=False)
-                self._parse_columns(squad_gks).to_csv(f'./data/Squad_GK_{year}.csv',index=False)
-                self._parse_columns(against_gks).to_csv(f'./data/Against_GK_{year}.csv',index=False)
-                self._parse_columns(players_gks).to_csv(f'./data/Players_GK_{year}.csv',index=False)
-                self._parse_columns(shots).to_csv(f'./data/Shots_{year}.csv',index=False)
-                self._parse_columns(squad_logs).to_csv(f'./data/Squad_Match_Logs_{year}.csv',index=False)
-                self._parse_columns(player_logs).to_csv(f'./data/Player_Match_Logs_{year}.csv',index=False)
+                self._parse_columns(squad).to_csv(f'data/Squad_{league}_{year}.csv',index=False)
+                self._parse_columns(against).to_csv(f'data/Against_{league}_{year}.csv',index=False)
+                self._parse_columns(players).to_csv(f'data/Players_{league}_{year}.csv',index=False)
+                self._parse_columns(squad_gks).to_csv(f'data/Squad_GK_{league}_{year}.csv',index=False)
+                self._parse_columns(against_gks).to_csv(f'data/Against_GK_{league}_{year}.csv',index=False)
+                self._parse_columns(players_gks).to_csv(f'data/Players_GK_{league}_{year}.csv',index=False)
+                self._parse_columns(shots).to_csv(f'data/Shots_{league}_{year}.csv',index=False)
+                self._parse_columns(squad_logs).to_csv(f'data/Squad_Match_Logs_{league}_{year}.csv',index=False)
+                self._parse_columns(player_logs).to_csv(f'data/Player_Match_Logs_{league}_{year}.csv',index=False)
 
-            self.scraper.close()
+        self.scraper.close()
 
+    def combine_all_csvs(self):
+        csv_names = ['Squad','Against','Players','Squad_GK','Against_GK','Players_GK','Shots','Squad_Match_Logs','Player_Match_Logs']
+        for year in self.years:
+            for csv in csv_names:
+                dfs = []
+                for league in self.leagues:
+                    if os.path.exists(f'data/{csv}_{league}_{year}.csv'):
+                        dfs.append(pd.read_csv(f'data/{csv}_{league}_{year}.csv'))
+                    else:
+                        print(f'No {csv} for {league} in {year}')
+                        return
+                df = pd.concat(dfs,ignore_index=True)
+                df.to_csv(f'data/{csv}_{year}.csv',index=False)
+                for league in self.leagues:
+                    os.remove(f'data/{csv}_{league}_{year}.csv')
     
             
     def _parse_stats(self, d, i):
@@ -223,6 +238,8 @@ class TeamPlayerScraper:
         return df.loc[:, ~df.columns.duplicated()]
     
 
+
+
 if __name__ == '__main__':
 
     #to scrape 2022-2023 set to 2023
@@ -234,3 +251,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     scraper = TeamPlayerScraper(args.start, args.end, args.leagues)
     scraper.scrape()
+    scraper.combine_all_csvs()
