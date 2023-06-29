@@ -13,6 +13,8 @@ class TeamPlayerScraper:
 
     def scrape(self) -> None:
         self.scraper = sfc.FBRef()
+        # Set time out to 5 mins
+        self.scraper.driver.set_page_load_timeout(120000) 
         for year in self.years:
             players = pd.DataFrame()
             players_gks = pd.DataFrame()
