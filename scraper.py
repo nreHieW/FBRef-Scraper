@@ -1,5 +1,6 @@
 import argparse
 import os
+import time
 import datetime
 import pandas as pd
 import ScraperFC as sfc
@@ -26,7 +27,12 @@ class TeamPlayerScraper:
             player_logs = pd.DataFrame()
             squad_logs = pd.DataFrame()
             for league in self.leagues:
-                data = self.scraper.scrape_all_stats(year, league=league)
+                try:
+                    data = self.scraper.scrape_all_stats(year, league=league)
+                except Exception as e:
+                    print(e)
+                    time.sleep(180)
+                    data = self.scraper.scrape_all_stats(year, league=league)
                 squad_indiv,squad_gk_indiv = self._parse_stats(data,0)
                 squad_indiv['League'] = league
                 squad_gk_indiv['League'] = league
@@ -63,18 +69,18 @@ class TeamPlayerScraper:
                     print(shots.columns)
                     print(e)
                 
-                #save as csv
-                if not os.path.exists('data'):
-                        os.makedirs('data')
-                self._parse_columns(squad).to_csv(f'data/Squad_{league}_{year}.csv',index=False)
-                self._parse_columns(against).to_csv(f'data/Against_{league}_{year}.csv',index=False)
-                self._parse_columns(players).to_csv(f'data/Players_{league}_{year}.csv',index=False)
-                self._parse_columns(squad_gks).to_csv(f'data/Squad_GK_{league}_{year}.csv',index=False)
-                self._parse_columns(against_gks).to_csv(f'data/Against_GK_{league}_{year}.csv',index=False)
-                self._parse_columns(players_gks).to_csv(f'data/Players_GK_{league}_{year}.csv',index=False)
-                self._parse_columns(shots).to_csv(f'data/Shots_{league}_{year}.csv',index=False)
-                self._parse_columns(squad_logs).to_csv(f'data/Squad_Match_Logs_{league}_{year}.csv',index=False)
-                self._parse_columns(player_logs).to_csv(f'data/Player_Match_Logs_{league}_{year}.csv',index=False)
+            #save as csv
+            if not os.path.exists('data'):
+                    os.makedirs('data')
+            self._parse_columns(squad).to_csv(f'data/Squad_{league}_{year}.csv',index=False)
+            self._parse_columns(against).to_csv(f'data/Against_{league}_{year}.csv',index=False)
+            self._parse_columns(players).to_csv(f'data/Players_{league}_{year}.csv',index=False)
+            self._parse_columns(squad_gks).to_csv(f'data/Squad_GK_{league}_{year}.csv',index=False)
+            self._parse_columns(against_gks).to_csv(f'data/Against_GK_{league}_{year}.csv',index=False)
+            self._parse_columns(players_gks).to_csv(f'data/Players_GK_{league}_{year}.csv',index=False)
+            self._parse_columns(shots).to_csv(f'data/Shots_{league}_{year}.csv',index=False)
+            self._parse_columns(squad_logs).to_csv(f'data/Squad_Match_Logs_{league}_{year}.csv',index=False)
+            self._parse_columns(player_logs).to_csv(f'data/Player_Match_Logs_{league}_{year}.csv',index=False)
 
         self.scraper.close()
 
