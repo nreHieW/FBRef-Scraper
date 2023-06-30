@@ -3,7 +3,7 @@ import os
 import time
 import datetime
 import pandas as pd
-import ScraperFC as sfc
+from fbref import FBRef
 
 class TeamPlayerScraper:
     def __init__(self, start:int, end:int, leagues: list = ['EPL', 'La Liga', 'Serie A','Ligue 1','Bundesliga']) -> None:
@@ -13,9 +13,7 @@ class TeamPlayerScraper:
         self.leagues = leagues
 
     def scrape(self) -> None:
-        self.scraper = sfc.FBRef()
-        # Set time out to 5 mins
-        self.scraper.driver.set_page_load_timeout(120000) 
+        self.scraper = FBRef()
         for year in self.years:
             players = pd.DataFrame()
             players_gks = pd.DataFrame()
