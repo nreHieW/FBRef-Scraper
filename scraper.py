@@ -59,15 +59,15 @@ class TeamPlayerScraper:
                     indiv_shots = self._parse_shots(row[1]['Shots'].loc['Both'],row[1].to_frame())
                     shots = pd.concat([shots, indiv_shots],ignore_index=True)
 
-                ids = dict(zip(squad['Standard Squad'].tolist(),squad['Standard Team_ID'].tolist()))
-                print('Total Team IDs: ',len(ids))
-                tmp = self._get_match_level(ids,year)
-                squad_logs = pd.concat([squad_logs,tmp],ignore_index=True)
-                try:
-                    shots['Minute'] = shots['Minute'].astype(str)
-                except Exception as e:
-                    print(shots.columns)
-                    print(e)
+            ids = dict(zip(squad['Standard Squad'].tolist(),squad['Standard Team_ID'].tolist()))
+            print('Total Team IDs: ',len(ids))
+            tmp = self._get_match_level(ids,year)
+            squad_logs = pd.concat([squad_logs,tmp],ignore_index=True)
+            try:
+                shots['Minute'] = shots['Minute'].astype(str)
+            except Exception as e:
+                print(shots.columns)
+                print(e)
                 
             #save as csv
             if not os.path.exists('data'):
