@@ -64,6 +64,8 @@ class TeamPlayerScraper:
                     print(e)
                 
                 #save as csv
+                if not os.path.exists('data'):
+                        os.makedirs('data')
                 self._parse_columns(squad).to_csv(f'data/Squad_{league}_{year}.csv',index=False)
                 self._parse_columns(against).to_csv(f'data/Against_{league}_{year}.csv',index=False)
                 self._parse_columns(players).to_csv(f'data/Players_{league}_{year}.csv',index=False)
