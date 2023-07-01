@@ -13,16 +13,34 @@ jobs:
           python-version: '3.9'
       - name: Installed package list
         run: apt list --installed
+
       - name: Remove Chrome
         run: sudo apt purge google-chrome-stable
+
       - name: Remove default Chromium
         run: sudo apt purge chromium-browser
+
       - name: Install a new Chromium
         run: sudo apt install -y chromium-browser
+
       - name: Install all necessary packages
         run: pip install -r requirements.txt
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WIP }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
       - name: Run the scraping script
         run: python test.py
+
       - name: Commit and push if it changed
         run: |-
           git config user.name "Automated"
