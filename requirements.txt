@@ -1,0 +1,4 @@
+pandas==1.5.2
+ScraperFC==2.6.1
+google-cloud-bigquery==3.4.1
+pandas-gbq==0.18.1
