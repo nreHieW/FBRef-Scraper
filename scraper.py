@@ -5,6 +5,7 @@ import datetime
 import json
 import difflib
 import pandas as pd
+import concurrent.futures
 from fbref import FBRef
 from google.cloud import bigquery
 
@@ -151,6 +152,16 @@ class TeamPlayerScraper:
                 shots.to_csv(f'data/{year}_shots.csv',index=False)
                 squad_logs.to_csv(f'data/{year}_squad_logs.csv',index=False)
                 player_logs.to_csv(f'data/{year}_player_logs.csv',index=False)
+            else:
+                squad.to_csv(f'data/{year}_squad.csv',index=False,mode='a',header=False)
+                against.to_csv(f'data/{year}_against.csv',index=False,mode='a',header=False)
+                player_df.to_csv(f'data/{year}_players.csv',index=False,mode='a',header=False)
+                squad_gks.to_csv(f'data/{year}_squad_gks.csv',index=False,mode='a',header=False)
+                against_gks.to_csv(f'data/{year}_against_gks.csv',index=False,mode='a',header=False)
+                players_gks.to_csv(f'data/{year}_players_gks.csv',index=False,mode='a',header=False)
+                shots.to_csv(f'data/{year}_shots.csv',index=False,mode='a',header=False)
+                squad_logs.to_csv(f'data/{year}_squad_logs.csv',index=False,mode='a',header=False)
+                player_logs.to_csv(f'data/{year}_player_logs.csv',index=False,mode='a',header=False)
 
             #save to bigquery
             self._write_to_bq(squad, f'Squad_{year}','Stats',self.write_type)
@@ -250,34 +261,41 @@ class TeamPlayerScraper:
         one['Date'] = pd.to_datetime(one['Date'])
         return one
 
-    def _get_match_logs(self, id,year,team):
-        print('Scraping',team,'for',year, end='\r', flush=True)
-        prefixes = ['shooting','keeper','passing','passing_types','gca','defense','possession','misc']
+    def _get_match_logs(self, id, year, team_name):
+        print('Scraping', team_name, 'for', year, end='\r', flush=True)
+        prefixes = ['shooting', 'keeper', 'passing', 'passing_types', 'gca', 'defense', 'possession', 'misc']
         starting_url = f'https://fbref.com/en/squads/{id}/{year-1}-{year}/matchlogs/all_comps/'
+        
         dfs = []
-        for prefix in prefixes:
-            newurl = starting_url+prefix
-            tmp = pd.read_html(self.scraper.requests_get(newurl).content)[0]
-            cols = tmp.columns.tolist()
-            parsed = []
-            for col in cols:
-                if (len(col[0].split()) > 1):
-                    parsed.append(prefix + ' ' +col[1])
-                elif (col[0] == col[1]):
-                    parsed.append(prefix + ' ' +col[0])
-                else:
-                    parsed.append(prefix + ' ' + col[0] + " " +col[1])
-            tmp.columns = [x.strip().replace(' ','_').title() for x in parsed]
-            dfs.append(tmp)
-        df = pd.concat(dfs,axis=1)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_prefix = {executor.submit(self._process_prefix, starting_url, prefix): prefix for prefix in prefixes}
+            for future in concurrent.futures.as_completed(future_to_prefix):
+                prefix = future_to_prefix[future]
+                tmp = future.result()
+                dfs.append(tmp)
         df = df.drop([x for x in df.columns.tolist() if ('Notes' in x) | ('Match_Report' in x)],axis=1)
         new_url =starting_url+'schedule'
         tmp = pd.read_html(new_url)[0].drop(['Match Report','Notes'],axis=1,errors='ignore')
         df = tmp.merge(df,how='right',left_on='Date',right_on='Shooting_Date')
-        df.insert(1,'Squad',team)
+        df.insert(1,'Squad',team_name)
         df = df.replace('Champions Lg','Champions League').replace('Europa Lg','Europa League')
         df = df.drop(df.tail(1).index)
         return df
+    
+    def _process_prefix(self, url, prefix):
+        new_url = url + prefix
+        tmp = pd.read_html(self.scraper.requests_get(new_url).content)[0]
+        cols = tmp.columns.tolist()
+        parsed = []
+        for col in cols:
+            if (len(col[0].split()) > 1):
+                parsed.append(prefix + ' ' +col[1])
+            elif (col[0] == col[1]):
+                parsed.append(prefix + ' ' +col[0])
+            else:
+                parsed.append(prefix + ' ' + col[0] + " " +col[1])
+        tmp.columns = [x.strip().replace(' ','_').title() for x in parsed]
+        return tmp
 
     def _get_match_level(self, teams, season):#get individual match level data
         def fix_penalty(df):
@@ -289,9 +307,13 @@ class TeamPlayerScraper:
             df.insert(11,'penagainst',penagainst)
             return df
         dfs = []
-        for team in teams:
-            tmp  = self._get_match_logs(teams.get(team),season,team)
-            dfs.append(tmp)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_team = {executor.submit(self._get_match_logs, team_info, season, team_name): team_name for team_name, team_info in teams.items()}
+            for future in concurrent.futures.as_completed(future_to_team):
+                team_name = future_to_team[future]
+                tmp = future.result()
+                dfs.append(tmp)
+                print('Finished scraping', team_name, 'for', season)
     
         df = pd.concat(dfs,ignore_index=True)
         df = df.dropna(thresh=35).fillna(0)
