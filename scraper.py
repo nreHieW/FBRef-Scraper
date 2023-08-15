@@ -116,6 +116,7 @@ class TeamPlayerScraper:
 
             assert len(logs_to_stats) == len(logs_teams)
             assert sorted(logs_to_stats.keys()) == sorted(squad_logs_league["Squad"].unique().tolist())
+            print(f"Created mapping of {len(logs_to_stats)} teams from logs to stats")
             
             player_logs_league["Home_Team"] = player_logs_league['Home_Team'].map(logs_to_stats)
             player_logs_league["Away_Team"] = player_logs_league['Away_Team'].map(logs_to_stats)
