@@ -106,8 +106,20 @@ class TeamPlayerScraper:
                 stats_team_mapping[player] = players[players["Standard_Player"] == player]["Standard_Squad"].values
 
             player_logs_league["Squad"] = player_logs_league.apply(lambda x: self._find_team(x, stats_team_mapping), axis = 1)
+            
+            assert player_logs_league["Home_Team"].isna().sum() == 0, f"Home team is null for {player_logs_league[player_logs_league['Home_Team'].isna()]['Summary_Player'].unique().tolist()}"
+            assert player_logs_league["Away_Team"].isna().sum() == 0, f"Away team is null for {player_logs_league[player_logs_league['Away_Team'].isna()]['Summary_Player'].unique().tolist()}"
+            assert player_logs_league['Home_Team'].nunique() == player_logs_league['Away_Team'].nunique(), f"Home and away teams do not match, {player_logs_league['Home_Team'].nunique()} home teams and {player_logs_league['Away_Team'].nunique()} away teams"
+            assert sorted(player_logs_league['Home_Team'].unique()) == sorted(self.logs_to_stats.keys()), f"Home teams do not match mapping"
+            assert sorted(player_logs_league['Away_Team'].unique()) == sorted(self.logs_to_stats.keys()), f"Away teams do not match mapping"
+            
             player_logs_league["Home_Team"] = player_logs_league['Home_Team'].map(self.logs_to_stats)
             player_logs_league["Away_Team"] = player_logs_league['Away_Team'].map(self.logs_to_stats)
+
+            player_logs_league["Match_String"] = player_logs_league.apply(lambda row: "".join(sorted([row["Home_Team"], row["Away_Team"]])), axis = 1)
+            squad_logs_league["Match_String"] = squad_logs_league.apply(lambda row: "".join(sorted([row["Squad"], row["Opponent"]])), axis = 1)
+
+            merged_df = player_logs_league.merge(squad_logs_league[["Squad","Match_String", "Poss"]], on = ["Match_String", "Squad"], how = "left").drop_duplicates(subset=["Stage"])
 
             player_logs_league["Match_String"] = player_logs_league.apply(lambda row: "".join(sorted([row["Home_Team"], row["Away_Team"]])), axis = 1)
             squad_logs_league["Match_String"] = squad_logs_league.apply(lambda row: "".join(sorted([row["Squad"], row["Opponent"]])), axis = 1)
