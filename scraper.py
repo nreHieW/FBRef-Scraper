@@ -17,8 +17,6 @@ class TeamPlayerScraper:
         self.years = list(range(start, end + 1))
         self.leagues = leagues
         self.write_type = write_type
-        with open("logs_to_stats.json", "r") as f:
-            self.logs_to_stats = json.load(f)
 
     def scrape(self) -> None:
         self.scraper = FBRef()
@@ -106,15 +104,21 @@ class TeamPlayerScraper:
                 stats_team_mapping[player] = players[players["Standard_Player"] == player]["Standard_Squad"].values
 
             player_logs_league["Squad"] = player_logs_league.apply(lambda x: self._find_team(x, stats_team_mapping), axis = 1)
+
+            # Create mapping from logs to stats -> replace home and away teams with stats teams
+            logs_to_stats = {}
+            logs_teams = player_logs_league["Home_Team"].unique().tolist()
+            stats_teams = players["Standard_Squad"].unique().tolist()
+            for team in logs_teams:
+                most_similar = self._find_most_similar_string(team, stats_teams)
+                logs_to_stats[team] = most_similar
+                stats_teams.remove(most_similar)
+
+            assert len(logs_to_stats) == len(logs_teams)
+            assert sorted(logs_to_stats.keys()) == sorted(squad_logs_league["Squad"].unique().tolist())
             
-            assert player_logs_league["Home_Team"].isna().sum() == 0, f"Home team is null for {player_logs_league[player_logs_league['Home_Team'].isna()]['Summary_Player'].unique().tolist()}"
-            assert player_logs_league["Away_Team"].isna().sum() == 0, f"Away team is null for {player_logs_league[player_logs_league['Away_Team'].isna()]['Summary_Player'].unique().tolist()}"
-            assert player_logs_league['Home_Team'].nunique() == player_logs_league['Away_Team'].nunique(), f"Home and away teams do not match, {player_logs_league['Home_Team'].nunique()} home teams and {player_logs_league['Away_Team'].nunique()} away teams"
-            assert sorted(player_logs_league['Home_Team'].unique()) == sorted(self.logs_to_stats.keys()), f"Home teams do not match mapping"
-            assert sorted(player_logs_league['Away_Team'].unique()) == sorted(self.logs_to_stats.keys()), f"Away teams do not match mapping"
-            
-            player_logs_league["Home_Team"] = player_logs_league['Home_Team'].map(self.logs_to_stats)
-            player_logs_league["Away_Team"] = player_logs_league['Away_Team'].map(self.logs_to_stats)
+            player_logs_league["Home_Team"] = player_logs_league['Home_Team'].map(logs_to_stats)
+            player_logs_league["Away_Team"] = player_logs_league['Away_Team'].map(logs_to_stats)
 
             player_logs_league["Match_String"] = player_logs_league.apply(lambda row: "".join(sorted([row["Home_Team"], row["Away_Team"]])), axis = 1)
             squad_logs_league["Match_String"] = squad_logs_league.apply(lambda row: "".join(sorted([row["Squad"], row["Opponent"]])), axis = 1)
@@ -401,6 +405,13 @@ class TeamPlayerScraper:
         opp_posession = 100 - row["Poss"]
         assert opp_posession >= 0, f"{row['Poss']} is not a valid posession value for metric {metric}"
         return row[metric] / opp_posession * 50
+    
+    def _find_most_similar_string(self, string, list_of_strings):
+        matches = difflib.get_close_matches(string, list_of_strings)
+        if len(matches) > 0:
+            return matches[0]
+        else:
+            return None
 
     
 
