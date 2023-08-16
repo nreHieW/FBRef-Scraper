@@ -309,7 +309,7 @@ class TeamPlayerScraper:
         for team in teams:
             tmp  = self._get_match_logs(teams.get(team),season,team)
             dfs.append(tmp)
-            time.sleep(5)
+            time.sleep(3)
     
         df = pd.concat(dfs,ignore_index=True)
         df = df.dropna(thresh=35).fillna(0)
