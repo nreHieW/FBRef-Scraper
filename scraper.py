@@ -98,6 +98,9 @@ class TeamPlayerScraper:
             player_logs_league["Defense_Tackles_Tkl"] = player_logs_league['Summary_Performance_Tkl']
             player_logs_league["Defense_Int"] = player_logs_league["Summary_Performance_Int"]
 
+            player_logs_league = player_logs_league.drop_duplicates(subset=["Stage"])
+            squad_logs_league = squad_logs_league.drop_duplicates(subset=["Stage"])
+
             player_names = player_logs_league["Summary_Player"].unique().tolist()
             stats_team_mapping = {}
             for player in player_names:
@@ -126,11 +129,8 @@ class TeamPlayerScraper:
 
             merged_df = player_logs_league.merge(squad_logs_league[["Squad","Match_String", "Poss"]], on = ["Match_String", "Squad"], how = "left").drop_duplicates(subset=["Stage"])
 
-            player_logs_league["Match_String"] = player_logs_league.apply(lambda row: "".join(sorted([row["Home_Team"], row["Away_Team"]])), axis = 1)
-            squad_logs_league["Match_String"] = squad_logs_league.apply(lambda row: "".join(sorted([row["Squad"], row["Opponent"]])), axis = 1)
-
-            merged_df = player_logs_league.merge(squad_logs_league[["Squad","Match_String", "Poss"]], on = ["Match_String", "Squad"], how = "left").drop_duplicates(subset=["Stage"])
-            assert len(merged_df) == len(player_logs_league)
+            assert len(merged_df) == len(player_logs_league), f"Length of merged df {len(merged_df)} does not match length of player logs {len(player_logs_league)}"
+            
             to_adjust_metrics = [x for x in merged_df.columns if ("Defense" in x) or (x.startswith("Passing"))]
             to_adjust_metrics = [x for x in to_adjust_metrics if 'pct' not in x.lower()]
             for metric in to_adjust_metrics:
