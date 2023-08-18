@@ -97,10 +97,7 @@ class TeamPlayerScraper:
             player_logs_league["Defense_Blocks"] = player_logs_league['Summary_Performance_Blocks']
             player_logs_league["Defense_Tackles_Tkl"] = player_logs_league['Summary_Performance_Tkl']
             player_logs_league["Defense_Int"] = player_logs_league["Summary_Performance_Int"]
-
-            player_logs_league = player_logs_league.drop_duplicates(subset=["Stage"])
-            squad_logs_league = squad_logs_league.drop_duplicates(subset=["Stage"])
-
+            
             player_names = player_logs_league["Summary_Player"].unique().tolist()
             stats_team_mapping = {}
             for player in player_names:
