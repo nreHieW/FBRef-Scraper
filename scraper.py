@@ -126,12 +126,12 @@ class TeamPlayerScraper:
 
             merged_df = player_logs_league.merge(squad_logs_league[["Squad","Match_String", "Poss"]], on = ["Match_String", "Squad"], how = "left")
 
-            # for each team, drop duplicates based on stage 
-            merged_df = merged_df.drop_duplicates(subset=["Stage", "Squad"])
+            # for each player, drop duplicates based on stage 
+            merged_df = merged_df.drop_duplicates(subset=["Stage", "Summary_Player"])
 
             # for logging purposes
-            for team in merged_df["Squad"].unique().tolist():
-                print(f"Found {len(merged_df[merged_df['Squad'] == team])} matches for {team}")
+            # for team in merged_df["Squad"].unique().tolist():
+            #     print(f"Found {len(merged_df[merged_df['Squad'] == team])} matches for {team}")
 
 
             assert len(merged_df) == len(player_logs_league), f"Length of merged df {len(merged_df)} does not match length of player logs {len(player_logs_league)}"
