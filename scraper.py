@@ -127,7 +127,7 @@ class TeamPlayerScraper:
             merged_df = player_logs_league.merge(squad_logs_league[["Squad","Match_String", "Poss"]], on = ["Match_String", "Squad"], how = "left")
 
             # for each player, drop duplicates based on stage 
-            merged_df = merged_df.drop_duplicates(subset=["Stage", "Summary_Player"])
+            merged_df = merged_df.drop_duplicates(subset=["Stage", "Summary_Player", "Squad"])
 
             # for logging purposes
             # for team in merged_df["Squad"].unique().tolist():
