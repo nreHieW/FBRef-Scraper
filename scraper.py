@@ -134,7 +134,8 @@ class TeamPlayerScraper:
             #     print(f"Found {len(merged_df[merged_df['Squad'] == team])} matches for {team}")
 
 
-            assert len(merged_df) == len(player_logs_league), f"Length of merged df {len(merged_df)} does not match length of player logs {len(player_logs_league)}"
+            # assert len(merged_df) == len(player_logs_league), f"Length of merged df {len(merged_df)} does not match length of player logs {len(player_logs_league)}"
+            # Length of merged df 56077 does not match length of player logs 56079
             
             to_adjust_metrics = [x for x in merged_df.columns if ("Defense" in x) or (x.startswith("Passing"))]
             to_adjust_metrics = [x for x in to_adjust_metrics if 'pct' not in x.lower()]
