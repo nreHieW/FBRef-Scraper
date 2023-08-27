@@ -87,7 +87,7 @@ class TeamPlayerScraper:
             squad_logs = self._parse_columns(squad_logs)
             player_logs = self._parse_columns(player_logs)
 
-            player_logs_league = player_logs[player_logs["Stage"].str.contains("Matchweek")]
+            player_logs_league = player_logs[(player_logs["Stage"].str.contains("Matchweek"))]
             squad_logs_league = squad_logs[squad_logs["Round"].str.contains("Matchweek")]
 
             player_squad_logs_mapping = self._find_closest_matches(player_logs_league["Home_Team"].unique().tolist(), squad_logs_league["Squad"].unique().tolist())
@@ -130,10 +130,10 @@ class TeamPlayerScraper:
             merged_df = merged_df.drop_duplicates(subset=["Stage", "Summary_Player", "Squad"])
 
             # for logging purposes
-            # for team in merged_df["Squad"].unique().tolist():
-            #     print(f"Found {len(merged_df[merged_df['Squad'] == team])} matches for {team}")
+            for team in merged_df["Squad"].unique().tolist():
+                print(f"Found {len(merged_df[merged_df['Squad'] == team])} matches for {team}")
 
-
+            print(f"Length of merged df {len(merged_df)} and length of player logs {len(player_logs_league)}")
             # assert len(merged_df) == len(player_logs_league), f"Length of merged df {len(merged_df)} does not match length of player logs {len(player_logs_league)}"
             # Length of merged df 56077 does not match length of player logs 56079
             
@@ -142,8 +142,8 @@ class TeamPlayerScraper:
             for metric in to_adjust_metrics:
                 merged_df[f"Padj_{metric.replace('Defense', 'Defensive')}"] = merged_df.apply(lambda row: self._posession_adjust(row, metric), axis = 1)
 
-            padj_df = merged_df[["Summary_Player"] + [f"Padj_{x}" for x in [y.replace("Defense", "Defensive") for y in to_adjust_metrics]]].groupby(["Summary_Player"]).sum().reset_index()
-            player_df = players.merge(padj_df, left_on = ["Standard_Player"], right_on=["Summary_Player"],how = "left")
+            padj_df = merged_df[["Summary_Player"] + [f"Padj_{x}" for x in [y.replace("Defense", "Defensive") for y in to_adjust_metrics]]].groupby(["Summary_Player", "Summary_Player_ID"]).sum().reset_index()
+            player_df = players.merge(padj_df, left_on = ["Standard_Player", "Standard_Player_ID"], right_on=["Summary_Player", "Summary_Player_ID"],how = "left")
 
             to_normalize = [x for x in player_df.columns if ("90" not in x ) and ("pct" not in x.lower()) and ("playing_time" not in x.lower()) ]
             minutes = 'Standard_Playing_Time_90s'
