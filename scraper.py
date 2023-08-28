@@ -142,6 +142,7 @@ class TeamPlayerScraper:
             for metric in to_adjust_metrics:
                 merged_df[f"Padj_{metric.replace('Defense', 'Defensive')}"] = merged_df.apply(lambda row: self._posession_adjust(row, metric), axis = 1)
 
+            print(merged_df.columns.tolist())
             padj_df = merged_df[["Summary_Player"] + [f"Padj_{x}" for x in [y.replace("Defense", "Defensive") for y in to_adjust_metrics]]].groupby(["Summary_Player", "Summary_Player_ID"]).sum().reset_index()
             player_df = players.merge(padj_df, left_on = ["Standard_Player", "Standard_Player_ID"], right_on=["Summary_Player", "Summary_Player_ID"],how = "left")
 

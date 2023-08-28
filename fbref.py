@@ -128,10 +128,10 @@ class FBRef:
         : str
             URL to the FBRef page of the chosen league season 
         """
-        err, valid = check_season(year,league,"FBRef")
-        if not valid:
-            print(err)
-            return None
+        # err, valid = check_season(year,league,"FBRef")
+        # if not valid:
+        #     print(err)
+        #     return None
         
         url = sources["FBRef"][league]["url"]
         finder = sources["FBRef"][league]["finder"]
@@ -169,10 +169,10 @@ class FBRef:
         : list
             FBRef links to all matches for the chosen league season
         """
-        err, valid = check_season(year,league,'FBRef')
-        if not valid:
-            print(err)
-            return None
+        # err, valid = check_season(year,league,'FBRef')
+        # if not valid:
+        #     print(err)
+        #     return None
 
         print('Gathering match links.')
         season_link = self.get_season_link(year, league)
@@ -224,10 +224,10 @@ class FBRef:
             If the league is MLS, a tuple of (west conference table, east \
             conference table). Both tables are dataframes.
         """
-        err, valid = check_season(year,league,'FBRef')
-        if not valid:
-            print(err)
-            return -1
+        # err, valid = check_season(year,league,'FBRef')
+        # if not valid:
+        #     print(err)
+        #     return -1
         print('Scraping {} {} league table'.format(year, league))
         
         season_url = self.get_season_link(year, league)
@@ -272,10 +272,10 @@ class FBRef:
             tuple of 3 Pandas DataFrames, (squad_stats, opponent_stats,\
             player_stats).
         """
-        err, valid = check_season(year,league,'FBRef')
-        if not valid:
-            print(err)
-            return -1
+        # err, valid = check_season(year,league,'FBRef')
+        # if not valid:
+        #     print(err)
+        #     return -1
         
         # Verify valid stat category
         if stat_category not in self.stats_categories.keys():
@@ -380,10 +380,10 @@ class FBRef:
             Keys are stat category names, values are tuples of 3 dataframes,\
             (squad_stats, opponent_stats, player_stats)
         """
-        err, valid = check_season(year,league,'FBRef')
-        if not valid:
-            print(err)
-            return -1
+        # err, valid = check_season(year,league,'FBRef')
+        # if not valid:
+        #     print(err)
+        #     return -1
         
         return_package = dict()
         for stat_category in tqdm(self.stats_categories):
@@ -417,10 +417,10 @@ class FBRef:
         filename : str
             If save is True, will return the filename the CSV was saved to.
         """
-        err, valid = check_season(year,league,'FBRef')
-        if not valid:
-            print(err)
-            return -1
+        # err, valid = check_season(year,league,'FBRef')
+        # if not valid:
+        #     print(err)
+        #     return -1
         season = str(year-1)+'-'+str(year)
         links = self.get_match_links(year,league)
         
