@@ -429,8 +429,8 @@ if __name__ == '__main__':
 
     #to scrape 2022-2023 set to 2023
     parser = argparse.ArgumentParser(description='Team Player Scraper')
-    parser.add_argument('--start', type=int, help='Start year', default=datetime.date.today().year)
-    parser.add_argument('--end', type=int, help='End year', default=datetime.date.today().year)
+    parser.add_argument('--start', type=int, help='Start year', default=2024)
+    parser.add_argument('--end', type=int, help='End year', default=2024)
     parser.add_argument('--leagues', nargs='+', help="Leagues included are for eg ['EPL', 'La Liga', 'Serie A', 'Ligue 1', 'Bundesliga', 'Eredivisie', 'Primeira Liga']", 
                         default=['EPL', 'La Liga', 'Serie A', 'Ligue 1', 'Bundesliga'])
     parser.add_argument('--write_type', type=str, help='Write Type', default='WRITE_TRUNCATE')
