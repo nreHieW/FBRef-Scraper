@@ -27,7 +27,7 @@ jobs:
         
       - name: Install xvfb
         run: sudo apt-get install xvfb
-        
+
       - name: Install Other Requirements
         run: pip install -r requirements.txt
 
@@ -43,7 +43,7 @@ jobs:
       - name: Running the Python script
         env: 
           GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
-        run: python Selenium-Template.py
+        run: python event_data_scraper.py
         
       - name: Commit and Push The Results
         run: |
