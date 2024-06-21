@@ -85,6 +85,7 @@ class WhoScored:
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
             if el.get_attribute("id") == "seasons":
                 for subel in el.find_elements(By.TAG_NAME, "option"):
+                    print(subel.text)
                     if subel.text == year_str:
                         return "https://www.whoscored.com" + subel.get_attribute("value")
         return -1
@@ -95,7 +96,7 @@ class WhoScored:
         # Go to season page
         season_link = self.get_season_link(year, league)
         if season_link == -1:
-            print("Failed to get season link.")
+            print("Failed to get season link for {}-{} {}".format(year - 1, year, league))
             return -1
 
         # Repeatedly try to get to the season's homepage
