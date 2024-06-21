@@ -446,4 +446,5 @@ import soccerdata as sd
 
 ws = sd.WhoScored(leagues="ENG-Premier League", seasons=2021)
 events = ws.read_events(match_id=1485184)
-print(events.head())
+# print(events.head())
+print(ws._driver.page_source)
