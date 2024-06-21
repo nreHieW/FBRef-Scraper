@@ -6,25 +6,25 @@
 # from utils import write_to_bq, check_size
 
 
-# # if current environment is ubuntu
-# def is_ubuntu():
-#     try:
-#         with open("/etc/os-release", "r") as file:
-#             content = file.read()
-#             if "Ubuntu" in content:
-#                 return True
-#             else:
-#                 return False
-#     except FileNotFoundError:
-#         return False
+# if current environment is ubuntu
+def is_ubuntu():
+    try:
+        with open("/etc/os-release", "r") as file:
+            content = file.read()
+            if "Ubuntu" in content:
+                return True
+            else:
+                return False
+    except FileNotFoundError:
+        return False
 
 
-# if is_ubuntu():  # github actions
-#     print("Running on Ubuntu")
-#     from pyvirtualdisplay import Display
+if is_ubuntu():  # github actions
+    print("Running on Ubuntu")
+    from pyvirtualdisplay import Display
 
-#     display = Display(visible=0, size=(800, 800))
-#     display.start()
+    display = Display(visible=0, size=(800, 800))
+    display.start()
 
 # LINKS_CACHE_FPATH = "data/cache/whoscored_links.txt"
 
