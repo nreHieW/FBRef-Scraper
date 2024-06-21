@@ -70,7 +70,7 @@ def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool =
     counter = 0
     while True:
         try:
-            response = requests.get(url, headers=HEADERS, proxies=None)
+            response = requests.get(url, headers=HEADERS, proxies=get_proxy())
             if response.status_code == 200:
                 return response
             elif response.status_code == 429:
@@ -88,7 +88,9 @@ def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool =
 
                 print(f"Max iterations reached for {url}")
                 return None
-        except requests.exceptions.ProxyError as e:
+        except Exception as e:
+            if verbose:
+                print(f"An error occurred: {e}")
             counter += 1
 
 
