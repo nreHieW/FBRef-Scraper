@@ -40,6 +40,9 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
+      - name: Test Proxies
+        run: python engines/request_utils.py
+
       - name: Running the Python script
         env: 
           GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
