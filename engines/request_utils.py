@@ -70,7 +70,7 @@ def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool =
     counter = 0
     while True:
         try:
-            response = requests.get(url, headers=HEADERS, proxies=get_proxy())
+            response = requests.get(url, headers=HEADERS, proxies=None)
             if response.status_code == 200:
                 return response
             elif response.status_code == 429:
