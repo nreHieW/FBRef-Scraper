@@ -6,7 +6,6 @@ Requests==2.32.3
 ScraperFC==2.7.1
 selenium==4.22.0
 tqdm==4.64.1
-webdriver_manager==4.0.0
+webdriver_manager
 google-cloud-bigquery==3.4.1
 pandas-gbq==0.18.1
-chromedriver-autoinstaller
