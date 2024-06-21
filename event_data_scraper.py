@@ -4,6 +4,7 @@ import os
 import argparse
 import pandas as pd
 from utils import write_to_bq, check_size
+import chromedriver_autoinstaller
 
 
 # if current environment is ubuntu
@@ -20,6 +21,7 @@ def is_ubuntu():
 
 
 if is_ubuntu():  # github actions
+    chromedriver_autoinstaller.install()
     from pyvirtualdisplay import Display
 
     display = Display(visible=0, size=(800, 800))
