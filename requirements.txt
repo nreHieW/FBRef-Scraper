@@ -10,3 +10,4 @@ webdriver_manager==4.0.0
 google-cloud-bigquery==3.4.1
 pandas-gbq==0.18.1
 soccerdata
+undetected-chromedriver
