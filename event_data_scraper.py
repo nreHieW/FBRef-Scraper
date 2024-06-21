@@ -21,6 +21,7 @@ def is_ubuntu():
 
 
 if is_ubuntu():  # github actions
+    print("Running on Ubuntu")
     chromedriver_autoinstaller.install()
     from pyvirtualdisplay import Display
 
