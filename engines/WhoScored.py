@@ -22,17 +22,26 @@ class WhoScored:
     def __init__(self):
         options = Options()
         # # whoscored scraper CANNOT be headless
-        options.add_argument("window-size=700,600")
+        # options.add_argument("window-size=700,600")
         proxy = get_proxy()  # Use proxy
         print("Using proxy: {}".format(proxy))
-        options.add_argument(f"user-agent={HEADERS['user-agent']}")
+        # options.add_argument(f"user-agent={HEADERS['user-agent']}")
         # options.add_argument("--ignore-certificate-errors")
         # options.add_argument("--headless")
-        options.add_argument("--proxy-server=%s" % proxy["https"])
+        # options.add_argument("--proxy-server=%s" % proxy["https"])
         # prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         # options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
-        options.headless = True
+        # options.headless = True
+        proxy = proxy["https"]
+        ip, port = proxy.split(":")
+        options.set_preference("network.proxy.type", 1)
+        options.set_preference("network.proxy.http", ip)
+        options.set_preference("network.proxy.http_port", int(port))
+        options.set_preference("network.proxy.ssl", ip)
+        options.set_preference("network.proxy.ssl_port", int(port))
+        options.set_preference("general.useragent.override", HEADERS["user-agent"])
+
         # self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
         self.driver = webdriver.Firefox(options=options)
         # TEST IP

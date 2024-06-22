@@ -1,0 +1,181 @@
+1719061597840	geckodriver	INFO	Listening on 127.0.0.1:64749
+1719061598366	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileWzrHTq"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719061598944	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-proxy-server"
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1719061599226	Marionette	INFO	Listening on port 64757
+WebDriver BiDi listening on ws://127.0.0.1:64750
+Read port: 64757
+1719061599435	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:64750/devtools/browser/4ad22341-b6a9-4a58-82c1-18fd02d53a94
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-dom-factories
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/ObjectProvider
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeRow
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeHeader
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/scroll
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/constants
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/rep
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/Headers
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/LiveText
+http://requirejs.org/docs/errors.html#scripterror
+1719061605141	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719061605143	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719061605143	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript warning: https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_401174493, line 451: Script terminated by timeout at:
+nB@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_401174493:451:218
+rB/this.aa@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_401174493:449:29
+
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+Exiting due to channel error.
+1719061972097	geckodriver	INFO	Listening on 127.0.0.1:49826
+1719061972622	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofilefQocgD"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719061973181	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1719061973459	Marionette	INFO	Listening on port 49834
+WebDriver BiDi listening on ws://127.0.0.1:49827
+Read port: 49834
+1719061973770	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:49827/devtools/browser/5f2f3484-a340-4677-ac03-88015fbee029
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersPanel
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonPanel
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextPanel
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-prop-types
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tabs/Tabs
+http://requirejs.org/docs/errors.html#scripterror
+1719061977334	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719061977433	Marionette	INFO	Stopped listening on port 49834
+console.error: services.settings: 
+  main/fingerprinting-protection-overrides Signature failed  TypeError: NetworkError: Network request failed
+console.error: (new NetworkError("Network error: TypeError: NetworkError: Network request failed", "resource://services-settings/RemoteSettingsClient.sys.mjs", 107))
+console.error: (new NetworkError("Network error: TypeError: NetworkError: Network request failed", "resource://services-settings/RemoteSettingsClient.sys.mjs", 107))
+console.error: services.settings: 
+  main/query-stripping Signature failed  TypeError: NetworkError: Network request failed
+console.error: (new NetworkError("Network error: TypeError: NetworkError: Network request failed", "resource://services-settings/RemoteSettingsClient.sys.mjs", 107))
+1719061978213	geckodriver	INFO	Listening on 127.0.0.1:49865
+1719061978733	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileEOAjwJ"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719061979085	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1719061979338	Marionette	INFO	Listening on port 49873
+WebDriver BiDi listening on ws://127.0.0.1:49866
+Read port: 49873
+1719061979570	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:49866/devtools/browser/37963b8a-1ee7-4979-badf-4bb60cb3644f
+console.error: ({})
+1719061987545	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719061987792	Marionette	INFO	Stopped listening on port 49873
+console.error: services.settings: 
+  main/query-stripping Signature failed  TypeError: NetworkError: Network request failed
+console.error: (new NetworkError("Network error: TypeError: NetworkError: Network request failed", "resource://services-settings/RemoteSettingsClient.sys.mjs", 107))
+1719061988494	geckodriver	INFO	Listening on 127.0.0.1:49908
+1719061989001	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileYB8gS9"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719061989336	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1719061989612	Marionette	INFO	Listening on port 49917
+WebDriver BiDi listening on ws://127.0.0.1:49909
+Read port: 49917
+1719061989885	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:49909/devtools/browser/8a949ff2-1e80-4506-84f2-5e46b9e02353
+console.error: ({})
+1719062020059	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1719062095183	geckodriver	INFO	Listening on 127.0.0.1:50677
+1719062095702	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofile48VkuY"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719062096069	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1719062096371	Marionette	INFO	Listening on port 50685
+WebDriver BiDi listening on ws://127.0.0.1:50678
+Read port: 50685
+1719062096541	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:50678/devtools/browser/89a7b3a8-42e6-459e-8ab3-c417753dd68a
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/constants
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/rep
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/LiveText
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/Headers
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 19: TypeError: aWindow is null
+1719062128797	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1719062605399	geckodriver	INFO	Listening on 127.0.0.1:51483
+1719062605919	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileDBJb9P"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719062606298	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
+1719062606617	Marionette	INFO	Listening on port 51491
+WebDriver BiDi listening on ws://127.0.0.1:51484
+Read port: 51491
+1719062606786	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:51484/devtools/browser/a92adc7f-46f7-49cd-b7e1-be49db8b75c8
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-dom-factories
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeRow
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeHeader
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/ObjectProvider
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/scroll
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/LiveText
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/constants
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/rep
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/Headers
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersToolbar
+http://requirejs.org/docs/errors.html#scripterror
+JavaScript error: resource://gre/modules/PrivateBrowsingUtils.sys.mjs, line 19: TypeError: aWindow is null
