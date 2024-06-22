@@ -26,7 +26,7 @@ class WhoScored:
         options.add_argument(f"user-agent={HEADERS['user-agent']}")
         options.add_argument("--ignore-certificate-errors")
         options.add_argument("--headless")
-        options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+        options.add_argument("--proxy-server=%s" % proxy["https"])
         prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         options.add_experimental_option("prefs", prefs)
         self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
@@ -39,6 +39,10 @@ class WhoScored:
 
         # self.driver = uc.Chrome(options=options)
         # self.driver.reconnect()
+
+        # TEST IP
+        self.driver.get("http://httpbin.org/ip")
+        print(self.driver.page_source)
 
         clear_output()
 
