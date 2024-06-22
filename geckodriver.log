@@ -1,250 +1,23 @@
-1719062877835	geckodriver	INFO	Listening on 127.0.0.1:52261
-1719062878360	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofilev0QkI8"
+1719065023319	geckodriver	INFO	Listening on 127.0.0.1:59109
+1719065023838	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileM76X4Y"
+*** You are running in headless mode.
 console.warn: services.settings: Ignoring preference override of remote settings server
 console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719062878771	Marionette	INFO	Marionette enabled
+1719065024177	Marionette	INFO	Marionette enabled
 console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719062879101	Marionette	INFO	Listening on port 52269
-WebDriver BiDi listening on ws://127.0.0.1:52262
-Read port: 52269
-1719062879366	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:52262/devtools/browser/4ae2b168-765f-4575-87a0-88f518311954
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-prop-types
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonPanel
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextPanel
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersPanel
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tabs/Tabs
-http://requirejs.org/docs/errors.html#scripterror
-1719062881650	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719062881736	Marionette	INFO	Stopped listening on port 52269
-console.error: (new NetworkError("Network error: TypeError: NetworkError: Network request failed", "resource://services-settings/RemoteSettingsClient.sys.mjs", 107))
-1719062882408	geckodriver	INFO	Listening on 127.0.0.1:52294
-1719062882931	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileSVKx4e"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719062883325	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719062883648	Marionette	INFO	Listening on port 52302
-Read port: 52302
-WebDriver BiDi listening on ws://127.0.0.1:52295
-1719062883805	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:52295/devtools/browser/cab8b67d-ae90-43b9-96b3-c373fd472094
-console.error: ({})
-1719062890594	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719062890654	Marionette	INFO	Stopped listening on port 52302
-1719062891381	geckodriver	INFO	Listening on 127.0.0.1:52327
-1719062891902	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileOBvcUc"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719062892286	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719062892612	Marionette	INFO	Listening on port 52335
-WebDriver BiDi listening on ws://127.0.0.1:52328
-Read port: 52335
-1719062892797	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:52328/devtools/browser/7f1b5861-6873-4f66-87d2-a836f1fb467a
-console.error: ({})
-JavaScript error: resource:///modules/sessionstore/SessionStore.sys.mjs, line 3608: TypeError: this._windows[aWindow.__SSi] is undefined
-1719062912756	Marionette	INFO	Stopped listening on port 52335
-console.error: "Failed to fetch https://spocs.getpocket.com/user:" "NetworkError when attempting to fetch resource."
-console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
-1719062960690	geckodriver	INFO	Listening on 127.0.0.1:52894
-1719062961208	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofilePVLSVR"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719062961580	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719062961888	Marionette	INFO	Listening on port 52902
-WebDriver BiDi listening on ws://127.0.0.1:52895
-Read port: 52902
-1719062962057	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:52895/devtools/browser/c8730c77-5697-4ed7-badc-1adf0d2ad9d5
+1719065024446	Marionette	INFO	Listening on port 59118
+WebDriver BiDi listening on ws://127.0.0.1:59110
+Read port: 59118
+1719065024697	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+DevTools listening on ws://127.0.0.1:59110/devtools/browser/038195eb-77f2-4f76-96f0-83810c46ba66
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-dom-factories
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/ObjectProvider
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeHeader
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/scroll
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeRow
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/constants
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonToolbar
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/rep
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextToolbar
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/LiveText
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/Headers
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersToolbar
-http://requirejs.org/docs/errors.html#scripterror
-1719062966145	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'complete'.
-1719062967139	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719062967148	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719062967298	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-JavaScript error: chrome://global/content/elements/videocontrols.js, line 3263: TypeError: can't access dead object
-JavaScript warning: https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_1510189651, line 449: Script terminated by timeout at:
-rB/this.aa@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_1510189651:449:29
-
-1719062972917	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719062972918	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-1719063029945	geckodriver	INFO	Listening on 127.0.0.1:53713
-1719063030463	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofilek1xSVh"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063030834	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063031130	Marionette	INFO	Listening on port 53721
-WebDriver BiDi listening on ws://127.0.0.1:53714
-Read port: 53721
-1719063031300	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:53714/devtools/browser/1061886c-b05c-4fcb-8bbb-9ff842d80139
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-prop-types
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonPanel
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextPanel
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersPanel
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tabs/Tabs
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-dom-factories
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/ObjectProvider
 http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeRow
 http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeHeader
 http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/scroll
-http://requirejs.org/docs/errors.html#scripterror
-1719063032882	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063032965	Marionette	INFO	Stopped listening on port 53721
-1719063033737	geckodriver	INFO	Listening on 127.0.0.1:53744
-1719063034264	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofilexq1NoD"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063034642	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063034938	Marionette	INFO	Listening on port 53752
-WebDriver BiDi listening on ws://127.0.0.1:53745
-Read port: 53752
-1719063035106	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:53745/devtools/browser/5d1c93d1-e066-4e30-a545-5986696f49b9
-console.error: ({})
-1719063042240	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063042328	Marionette	INFO	Stopped listening on port 53752
-1719063043008	geckodriver	INFO	Listening on 127.0.0.1:53777
-1719063043528	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileu6SBCQ"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063043901	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063044204	Marionette	INFO	Listening on port 53785
-WebDriver BiDi listening on ws://127.0.0.1:53778
-Read port: 53785
-1719063044372	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:53778/devtools/browser/09f3a1ba-e106-4ab7-856a-19d4fa9d463d
-console.error: ({})
-1719063051371	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063051460	Marionette	INFO	Stopped listening on port 53785
-1719063052128	geckodriver	INFO	Listening on 127.0.0.1:53807
-1719063052648	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileAc9A0p"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063053022	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063053318	Marionette	INFO	Listening on port 53815
-WebDriver BiDi listening on ws://127.0.0.1:53808
-Read port: 53815
-1719063053488	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:53808/devtools/browser/aa0cd610-6fcd-4a15-858b-0d9a3d4bb978
-console.error: ({})
-1719063083082	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
-1719063170348	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063170412	Marionette	INFO	Stopped listening on port 53815
-console.error: (new Error("Polling for changes failed: NetworkError: Network request failed.", "resource://services-settings/remote-settings.sys.mjs", 324))
-console.error: (new NetworkError("Network error: TypeError: NetworkError: Network request failed", "resource://services-settings/RemoteSettingsClient.sys.mjs", 107))
-1719063171151	geckodriver	INFO	Listening on 127.0.0.1:53876
-1719063171673	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileAzBN0D"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063172040	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063172342	Marionette	INFO	Listening on port 53890
-WebDriver BiDi listening on ws://127.0.0.1:53877
-Read port: 53890
-1719063172511	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:53877/devtools/browser/c9095eb6-e5ee-4bed-96f1-de00e8077a2d
-console.error: ({})
-1719063180627	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063180682	Marionette	INFO	Stopped listening on port 53890
-console.error: (new TypeError("NetworkError: Network request failed", "resource://services-settings/Utils.sys.mjs", 236))
-1719063181477	geckodriver	INFO	Listening on 127.0.0.1:53921
-1719063181994	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileeRTbUF"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063182350	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063182648	Marionette	INFO	Listening on port 53929
-WebDriver BiDi listening on ws://127.0.0.1:53922
-Read port: 53929
-1719063182815	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:53922/devtools/browser/7f4d6a76-ed3f-4e51-953c-73f8ec46809c
-console.error: ({})
-1719063190536	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063190640	Marionette	INFO	Stopped listening on port 53929
-1719063191333	geckodriver	INFO	Listening on 127.0.0.1:53964
-1719063191843	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileegWsNi"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063192184	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063192480	Marionette	INFO	Listening on port 53972
-WebDriver BiDi listening on ws://127.0.0.1:53965
-Read port: 53972
-1719063192651	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:53965/devtools/browser/1c2edeea-eb1c-431f-a2e1-a55871555afd
-console.error: ({})
-1719063206890	Marionette	INFO	Stopped listening on port 53972
-1719063475421	geckodriver	INFO	Listening on 127.0.0.1:54740
-1719063475945	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileeeiN49"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063476326	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063476636	Marionette	INFO	Listening on port 54748
-WebDriver BiDi listening on ws://127.0.0.1:54741
-Read port: 54748
-1719063476805	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:54741/devtools/browser/1c61651f-9463-40d9-9f39-7e671df48735
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-dom-factories
-http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/ObjectProvider
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeRow
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeHeader
 http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/scroll
 http://requirejs.org/docs/errors.html#scripterror
@@ -254,107 +27,30 @@ JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: 
 http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/rep
 http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextToolbar
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/LiveText
-http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/Headers
 http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersToolbar
-http://requirejs.org/docs/errors.html#scripterror
-1719063483015	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063483015	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063483017	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063483684	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063483850	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063483851	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063483851	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-JavaScript warning: https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_312432668, line 451: Script terminated by timeout at:
-nB@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_312432668:451:218
-rB/this.aa@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_312432668:449:29
-
-JavaScript error: https://d2zywfiolv4f83.cloudfront.net/js/scripts/tournaments-show.js?v=1715611231, line 1: TypeError: window.dataLayer is undefined
-1719063491246	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063491247	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063491250	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-1719063558180	geckodriver	INFO	Listening on 127.0.0.1:55539
-1719063558697	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofile0DHt7N"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063559063	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063559388	Marionette	INFO	Listening on port 55547
-WebDriver BiDi listening on ws://127.0.0.1:55540
-Read port: 55547
-1719063559558	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:55540/devtools/browser/62085897-c3d6-4afe-b920-b5d6f1aceb3f
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/vendor/react-dom-factories
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/ObjectProvider
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeHeader
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/scroll
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/tree/TreeRow
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/Headers
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/HeadersToolbar
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/JsonToolbar
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/constants
-http://requirejs.org/docs/errors.html#scripterror
-JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/shared/components/reps/reps/rep
 http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/TextToolbar
 http://requirejs.org/docs/errors.html#scripterror
 JavaScript error: resource://devtools/client/jsonview/lib/require.js, line 170: Error: Script error for: devtools/client/jsonview/components/LiveText
 http://requirejs.org/docs/errors.html#scripterror
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-1719063631900	geckodriver	INFO	Listening on 127.0.0.1:56392
-1719063632419	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/App ... s" "localhost" "-foreground" "-no-remote" "-profile" "/var/folders/3d/vmwnf6vd1g5gnmb1rj98vf2w0000gn/T/rust_mozprofileqbzNAB"
-console.warn: services.settings: Ignoring preference override of remote settings server
-console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
-1719063632808	Marionette	INFO	Marionette enabled
-console.error: "Warning: unrecognized command line flag" "-remote-allow-hosts"
-1719063633153	Marionette	INFO	Listening on port 56400
-WebDriver BiDi listening on ws://127.0.0.1:56393
-Read port: 56400
-1719063633395	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
-DevTools listening on ws://127.0.0.1:56393/devtools/browser/739a1cdc-b6d0-4413-b4e0-e60d35568be8
-1719063637847	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'complete'.
-1719063639211	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063639212	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063639344	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-JavaScript error: resource://gre/actors/PictureInPictureChild.sys.mjs, line 350: TypeError: can't access dead object
-JavaScript warning: https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_601580660, line 451: Script terminated by timeout at:
-nB@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_601580660:451:218
-rB/this.aa@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_601580660:449:29
+1719065032733	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'complete'.
+1719065037500	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719065037501	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719065037503	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript warning: https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_45401148, line 451: Script terminated by timeout at:
+nB@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_45401148:451:310
+rB/this.aa@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_45401148:449:29
 
-1719063643469	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063643472	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-1719063643596	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
-Exiting due to channel error.
+1719065044787	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719065044787	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719065044920	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript warning: https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_1383281288, line 451: Script terminated by timeout at:
+nB@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_1383281288:451:218
+rB/this.aa@https://imasdk.googleapis.com/js/core/bridge3.647.0_en.html#goog_1383281288:449:29
+
+1719065048245	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719065048246	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719065048247	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1719065054261	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.

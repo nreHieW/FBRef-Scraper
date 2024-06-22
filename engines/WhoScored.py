@@ -32,7 +32,7 @@ class WhoScored:
         # prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         # options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
-        # options.headless = True
+        options.headless = True
         proxy = proxy["https"]
         ip, port = proxy.split(":")
         options.set_preference("network.proxy.type", 1)
