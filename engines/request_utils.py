@@ -59,11 +59,16 @@ def get_my_ip(proxies=None, verbose: bool = True):
 
 def test_proxy(proxy_url):
     proxy_dict = {"http": proxy_url, "https": proxy_url}
-    ip = get_my_ip(proxies=proxy_dict, verbose=False)
-    if ip and ip.startswith(proxy_url.split(":")[0]):
+    c = 0
+    for _ in range(10):
+        ip = get_my_ip(proxies=proxy_dict, verbose=False)
+        if ip and ip.startswith(proxy_url.split(":")[0]):
+            c += 1
+        else:
+            return None
+    if c == 10:
         return proxy_url
-    else:
-        return None
+    return None
 
 
 PROXIES = setup_proxies()
