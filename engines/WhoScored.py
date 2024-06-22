@@ -98,7 +98,8 @@ class WhoScored:
             try:
                 self.driver.get(links[league])
                 done = True
-            except:
+            except Exception as e:
+                print(e)
                 self.close()
                 self.__init__()
                 time.sleep(5)
@@ -127,7 +128,8 @@ class WhoScored:
             try:
                 self.driver.get(season_link)
                 done = True
-            except:
+            except Exception as e:
+                print(e)
                 self.close()
                 self.__init__()
                 time.sleep(5)
