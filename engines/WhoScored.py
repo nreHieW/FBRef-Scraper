@@ -38,8 +38,8 @@ class WhoScored:
         options.set_preference("network.proxy.type", 1)
         options.set_preference("network.proxy.http", ip)
         options.set_preference("network.proxy.http_port", int(port))
-        options.set_preference("network.proxy.ssl", ip)
-        options.set_preference("network.proxy.ssl_port", int(port))
+        # options.set_preference("network.proxy.ssl", ip)
+        # options.set_preference("network.proxy.ssl_port", int(port))
         options.set_preference("general.useragent.override", HEADERS["user-agent"])
 
         # self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
