@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from IPython.display import clear_output
-from .request_utils import get_proxy, HEADERS
+from .request_utils import get_proxy, HEADERS, get_request
 import json
 import os
 from tqdm import tqdm
@@ -21,8 +21,7 @@ class WhoScored:
         # options = Options()
         # # whoscored scraper CANNOT be headless
         # options.add_argument("window-size=700,600")
-        # proxy = get_proxy()  # Use proxy
-        proxy = {"http": "195.114.209.50:80", "https": "195.114.209.50:80"}
+        proxy = get_proxy()  # Use proxy
         # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
         # prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         # options.add_experimental_option("prefs", prefs)
@@ -40,6 +39,8 @@ class WhoScored:
         self.driver.get("http://httpbin.org/ip")
         print(self.driver.page_source)
         self.driver.reconnect()
+        r = get_request("https://whoscored.com", verbose=False, max_iter=5, verbose=True)
+        print(r.text)
 
         clear_output()
 
