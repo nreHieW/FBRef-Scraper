@@ -1,5 +1,7 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+
+# from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -24,15 +26,15 @@ class WhoScored:
         proxy = get_proxy()  # Use proxy
         print("Using proxy: {}".format(proxy))
         options.add_argument(f"user-agent={HEADERS['user-agent']}")
-        options.add_argument("--ignore-certificate-errors")
+        # options.add_argument("--ignore-certificate-errors")
         # options.add_argument("--headless")
         options.add_argument("--proxy-server=%s" % proxy["https"])
-        prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
-        options.add_experimental_option("prefs", prefs)
+        # prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
+        # options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
         options.headless = True
-        self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
-
+        # self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
+        self.driver = webdriver.Firefox(options=options)
         # TEST IP
         print("=====================")
         print("Testing IP")
