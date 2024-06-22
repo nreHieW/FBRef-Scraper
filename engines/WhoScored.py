@@ -12,6 +12,7 @@ import json
 import os
 from tqdm import tqdm
 import undetected_chromedriver as uc
+from bs4 import BeautifulSoup
 
 
 class WhoScored:
@@ -103,7 +104,9 @@ class WhoScored:
                 self.__init__()
                 time.sleep(5)
         print("League page status: {}".format(self.driver.execute_script("return document.readyState")))
-        print(self.driver.page_source)
+        html = self.driver.page_source
+        soup = BeautifulSoup(html, "html.parser")
+        print(soup.prettify())
 
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
