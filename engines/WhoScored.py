@@ -21,11 +21,11 @@ class WhoScored:
         options = Options()
         # # whoscored scraper CANNOT be headless
         options.add_argument("window-size=700,600")
-        # proxy = get_proxy()  # Use proxy
+        proxy = get_proxy()  # Use proxy
         options.add_argument(f"user-agent={HEADERS['user-agent']}")
         options.add_argument("--ignore-certificate-errors")
         options.add_argument("--headless")
-        # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+        options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
         prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         options.add_experimental_option("prefs", prefs)
         self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
