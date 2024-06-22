@@ -41,12 +41,12 @@ class WhoScored:
         # self.driver.reconnect()
 
         # TEST IP
-        print("=====================")
-        print("Testing IP")
-        print("=====================")
-        self.driver.get("http://httpbin.org/ip")
-        print(self.driver.page_source)
-        print("=====================")
+        # print("=====================")
+        # print("Testing IP")
+        # print("=====================")
+        # self.driver.get("http://httpbin.org/ip")
+        # print(self.driver.page_source)
+        # print("=====================")
 
         clear_output()
 
@@ -107,6 +107,7 @@ class WhoScored:
         print(self.driver.current_url)
         print(self.driver.title)
         print("Elements", self.driver.find_elements(By.TAG_NAME, "select"))
+        print(self.driver.page_source)
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
             if el.get_attribute("id") == "seasons":
