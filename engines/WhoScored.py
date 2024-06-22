@@ -7,12 +7,11 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from IPython.display import clear_output
-from .request_utils import get_proxy
+from .request_utils import get_proxy, HEADERS
 import json
 import os
 from tqdm import tqdm
 import undetected_chromedriver as uc
-from selenium_stealth import stealth
 
 
 class WhoScored:
@@ -29,19 +28,16 @@ class WhoScored:
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
         options = uc.ChromeOptions()
         options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+        options.add_argument(f"user-agent={HEADERS['User-Agent']}")
         options.add_argument("--window-size=1200,1200")
         options.add_argument("--ignore-certificate-errors")
         self.driver = uc.Chrome(options=options)
         self.driver.reconnect()
-        stealth(
-            self.driver,
-            languages=["en-US", "en"],
-            vendor="Google Inc.",
-            platform="Win32",
-            webgl_vendor="Intel Inc.",
-            renderer="Intel Iris OpenGL Engine",
-            fix_hairline=True,
-        )
+
+        # test
+        self.driver.get("http://httpbin.org/ip")
+        print(self.driver.page_source)
+        self.driver.reconnect()
 
         clear_output()
 
