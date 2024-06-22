@@ -22,6 +22,7 @@ class WhoScored:
         # # whoscored scraper CANNOT be headless
         options.add_argument("window-size=700,600")
         proxy = get_proxy()  # Use proxy
+        print("Using proxy: {}".format(proxy))
         options.add_argument(f"user-agent={HEADERS['user-agent']}")
         options.add_argument("--ignore-certificate-errors")
         options.add_argument("--headless")
