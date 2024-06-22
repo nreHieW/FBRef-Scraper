@@ -41,6 +41,9 @@ class WhoScored:
         # self.driver.reconnect()
 
         # TEST IP
+        print("=====================")
+        print("Testing IP")
+        print("=====================")
         self.driver.get("http://httpbin.org/ip")
         print(self.driver.page_source)
 
