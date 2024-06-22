@@ -29,10 +29,12 @@ class WhoScored:
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
         options = uc.ChromeOptions()
         options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+        options.add_argument("--window-size=1200,1200")
+        options.add_argument("--ignore-certificate-errors")
         self.driver = uc.Chrome(options=options)
         self.driver.reconnect()
         stealth(
-            driver,
+            self.driver,
             languages=["en-US", "en"],
             vendor="Google Inc.",
             platform="Win32",
