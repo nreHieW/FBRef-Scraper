@@ -90,3 +90,16 @@ def check_size(dataset_name: str):  # checks and prints out size of entire data 
     for row in job:
         size = row[0] / (10**6)
     print("Current Data Size is", size, "MB")
+
+
+# if current environment is ubuntu
+def is_ubuntu():
+    try:
+        with open("/etc/os-release", "r") as file:
+            content = file.read()
+            if "Ubuntu" in content:
+                return True
+            else:
+                return False
+    except FileNotFoundError:
+        return False

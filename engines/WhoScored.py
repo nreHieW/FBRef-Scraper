@@ -12,6 +12,7 @@ import json
 import os
 from tqdm import tqdm
 import undetected_chromedriver as uc
+from selenium_stealth import stealth
 
 
 class WhoScored:
@@ -30,6 +31,16 @@ class WhoScored:
         options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
         self.driver = uc.Chrome(options=options)
         self.driver.reconnect()
+        stealth(
+            driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+        )
+
         clear_output()
 
     ############################################################################

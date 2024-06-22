@@ -3,20 +3,7 @@ import json
 import os
 import argparse
 import pandas as pd
-from utils import write_to_bq, check_size
-
-
-# if current environment is ubuntu
-def is_ubuntu():
-    try:
-        with open("/etc/os-release", "r") as file:
-            content = file.read()
-            if "Ubuntu" in content:
-                return True
-            else:
-                return False
-    except FileNotFoundError:
-        return False
+from utils import write_to_bq, check_size, is_ubuntu
 
 
 if is_ubuntu():  # github actions
