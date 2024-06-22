@@ -29,7 +29,9 @@ class WhoScored:
         options.add_argument("--proxy-server=%s" % proxy["https"])
         prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         options.add_experimental_option("prefs", prefs)
-        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
+        # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
+        options.headless = True
+        self.driver = webdriver.Firefox(options=options)
         # options = uc.ChromeOptions()
         # # print("Using proxy: {}".format(proxy))
         # # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
@@ -41,12 +43,13 @@ class WhoScored:
         # self.driver.reconnect()
 
         # TEST IP
-        # print("=====================")
-        # print("Testing IP")
-        # print("=====================")
-        # self.driver.get("http://httpbin.org/ip")
-        # print(self.driver.page_source)
-        # print("=====================")
+        print("=====================")
+        print("Testing IP")
+        print("=====================")
+        self.driver.get("http://httpbin.org/ip")
+        print(self.driver.find_element(By.TAG_NAME, "body").text)
+        print("=====================")
+        # self.driver.get("https://google.com")
 
         clear_output()
 
@@ -107,7 +110,8 @@ class WhoScored:
         print(self.driver.current_url)
         print(self.driver.title)
         print("Elements", self.driver.find_elements(By.TAG_NAME, "select"))
-        print(self.driver.page_source)
+        print(self.driver.find_element(By.TAG_NAME, "body").text)
+
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
             if el.get_attribute("id") == "seasons":

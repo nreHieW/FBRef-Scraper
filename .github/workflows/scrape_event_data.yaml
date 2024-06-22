@@ -40,6 +40,18 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
+      - name: Setup Firefox
+      steps:
+        - uses: browser-actions/setup-firefox@v1
+        - run: firefox --version
+      - name: geckodriver/firefox
+      run: |
+        echo "geckodriver/firefox"
+        which geckodriver
+        geckodriver --version
+        which firefox
+        firefox --version
+
       # - name: Test Proxies
       #   run: python engines/request_utils.py
 
