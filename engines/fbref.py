@@ -15,7 +15,6 @@ import re
 import os
 from datetime import datetime
 from .request_utils import get_request
-import concurrent.futures
 from tqdm import tqdm
 
 MAX_WORKERS = 20
@@ -49,6 +48,7 @@ class FBRef:
         options.add_experimental_option("prefs", prefs)
         options.add_argument("--log-level=3")
         self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        self.options = options
         self.driver.set_page_load_timeout(120000)
 
         self.stats_categories = {
@@ -119,7 +119,14 @@ class FBRef:
         -------
         None
         """
-        self.driver.get(url)
+        try:
+            self.driver.get(url)
+        except Exception as E:
+            self.driver.close()
+            self.driver.quit()
+            self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=self.options)
+            self.driver.set_page_load_timeout(120000)
+            self.get(url)
         time.sleep(self.wait_time)
 
     ####################################################################################################################
