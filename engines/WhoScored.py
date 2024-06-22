@@ -28,7 +28,7 @@ class WhoScored:
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
         options = uc.ChromeOptions()
         options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
-        options.add_argument(f"user-agent={HEADERS['User-Agent']}")
+        options.add_argument(f"user-agent={HEADERS['user-agent']}")
         options.add_argument("--window-size=1200,1200")
         options.add_argument("--ignore-certificate-errors")
         self.driver = uc.Chrome(options=options)
