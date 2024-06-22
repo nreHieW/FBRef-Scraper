@@ -75,12 +75,12 @@ def get_proxy():
     return {"http": PROXIES[idx], "https": PROXIES[idx]}
 
 
-def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool = True) -> requests.Response:
+def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool = True, proxy=None) -> requests.Response:
     # url = url.replace("https://", "http://")
     counter = 0
     while True:
         try:
-            response = requests.get(url, headers=HEADERS, proxies=get_proxy())
+            response = requests.get(url, headers=HEADERS, proxies=get_proxy() if proxy else None, timeout=timeout)
             if response.status_code == 200:
                 return response
             elif response.status_code == 429:

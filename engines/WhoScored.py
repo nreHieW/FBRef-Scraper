@@ -18,29 +18,26 @@ class WhoScored:
 
     ############################################################################
     def __init__(self):
-        # options = Options()
+        options = Options()
         # # whoscored scraper CANNOT be headless
-        # options.add_argument("window-size=700,600")
-        proxy = get_proxy()  # Use proxy
-        # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
-        # prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
-        # options.add_experimental_option("prefs", prefs)
-        # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
-        options = uc.ChromeOptions()
-        print("Using proxy: {}".format(proxy))
-        options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+        options.add_argument("window-size=700,600")
+        # proxy = get_proxy()  # Use proxy
         options.add_argument(f"user-agent={HEADERS['user-agent']}")
-        options.add_argument("--window-size=1200,1200")
         options.add_argument("--ignore-certificate-errors")
-        self.driver = uc.Chrome(options=options)
-        self.driver.reconnect()
+        options.add_argument("--headless")
+        # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+        prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
+        options.add_experimental_option("prefs", prefs)
+        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
+        # options = uc.ChromeOptions()
+        # # print("Using proxy: {}".format(proxy))
+        # # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+        # options.add_argument(f"user-agent={HEADERS['user-agent']}")
+        # options.add_argument("--window-size=1200,1200")
+        # options.add_argument("--ignore-certificate-errors")
 
-        # test
-        self.driver.get("http://httpbin.org/ip")
-        print(self.driver.page_source)
-        self.driver.reconnect()
-        r = get_request("https://whoscored.com", max_iter=5, verbose=True)
-        print(r.text)
+        # self.driver = uc.Chrome(options=options)
+        # self.driver.reconnect()
 
         clear_output()
 
@@ -97,12 +94,12 @@ class WhoScored:
                 self.__init__()
                 time.sleep(5)
         print("League page status: {}".format(self.driver.execute_script("return document.readyState")))
-        print(self.driver.page_source)
+        # print(self.driver.page_source)
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
             if el.get_attribute("id") == "seasons":
                 for subel in el.find_elements(By.TAG_NAME, "option"):
-                    print(subel.text)
+                    # print(subel.text)
                     if subel.text == year_str:
                         return "https://www.whoscored.com" + subel.get_attribute("value")
         return -1
