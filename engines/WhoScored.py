@@ -21,7 +21,8 @@ class WhoScored:
         # options = Options()
         # # whoscored scraper CANNOT be headless
         # options.add_argument("window-size=700,600")
-        proxy = get_proxy()  # Use proxy
+        # proxy = get_proxy()  # Use proxy
+        proxy = {"http": "195.114.209.50:80", "https": "195.114.209.50:80"}
         # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
         # prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         # options.add_experimental_option("prefs", prefs)
