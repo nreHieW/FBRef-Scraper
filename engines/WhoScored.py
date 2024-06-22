@@ -39,7 +39,7 @@ class WhoScored:
         self.driver.get("http://httpbin.org/ip")
         print(self.driver.page_source)
         self.driver.reconnect()
-        r = get_request("https://whoscored.com", verbose=False, max_iter=5, verbose=True)
+        r = get_request("https://whoscored.com", max_iter=5, verbose=True)
         print(r.text)
 
         clear_output()
