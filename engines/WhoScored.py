@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from IPython.display import clear_output
@@ -11,7 +12,6 @@ from .request_utils import get_proxy, HEADERS, get_request
 import json
 import os
 from tqdm import tqdm
-import undetected_chromedriver as uc
 
 
 class WhoScored:
@@ -31,16 +31,7 @@ class WhoScored:
         options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
         options.headless = True
-        self.driver = webdriver.Firefox(options=options)
-        # options = uc.ChromeOptions()
-        # # print("Using proxy: {}".format(proxy))
-        # # options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
-        # options.add_argument(f"user-agent={HEADERS['user-agent']}")
-        # options.add_argument("--window-size=1200,1200")
-        # options.add_argument("--ignore-certificate-errors")
-
-        # self.driver = uc.Chrome(options=options)
-        # self.driver.reconnect()
+        self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
 
         # TEST IP
         print("=====================")
