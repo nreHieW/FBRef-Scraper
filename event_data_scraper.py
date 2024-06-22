@@ -6,12 +6,12 @@ import pandas as pd
 from utils import write_to_bq, check_size, is_ubuntu
 
 
-# if is_ubuntu():  # github actions
-#     print("Running on Ubuntu")
-#     from pyvirtualdisplay import Display
+if is_ubuntu():  # github actions
+    print("Running on Ubuntu")
+    from pyvirtualdisplay import Display
 
-#     display = Display(visible=0, size=(800, 800))
-#     display.start()
+    display = Display(visible=0, size=(800, 800))
+    display.start()
 
 LINKS_CACHE_FPATH = "data/cache/whoscored_links.txt"
 

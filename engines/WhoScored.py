@@ -25,7 +25,7 @@ class WhoScored:
         print("Using proxy: {}".format(proxy))
         options.add_argument(f"user-agent={HEADERS['user-agent']}")
         options.add_argument("--ignore-certificate-errors")
-        options.add_argument("--headless")
+        # options.add_argument("--headless")
         options.add_argument("--proxy-server=%s" % proxy["https"])
         prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         options.add_experimental_option("prefs", prefs)
@@ -102,12 +102,10 @@ class WhoScored:
                 self.__init__()
                 time.sleep(5)
         print("League page status: {}".format(self.driver.execute_script("return document.readyState")))
-        print(self.driver.page_source)
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
             if el.get_attribute("id") == "seasons":
                 for subel in el.find_elements(By.TAG_NAME, "option"):
-                    # print(subel.text)
                     if subel.text == year_str:
                         return "https://www.whoscored.com" + subel.get_attribute("value")
         return -1
