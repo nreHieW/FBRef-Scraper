@@ -105,7 +105,6 @@ class WhoScored:
         print("League page status: {}".format(self.driver.execute_script("return document.readyState")))
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
-            print("Element ID: {}".format(el.get_attribute("id")))
             if el.get_attribute("id") == "seasons":
                 for subel in el.find_elements(By.TAG_NAME, "option"):
                     if subel.text == year_str:
@@ -143,7 +142,8 @@ class WhoScored:
             stage_urls = [
                 self.driver.current_url,
             ]
-
+        print("Found {} stages".format(len(stage_urls)))
+        print(stage_urls)
         # Iterate through the stages
         for stage_url in stage_urls:
             self.driver.get(stage_url)
