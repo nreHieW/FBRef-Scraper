@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
 
 
-def setup_proxies(test_url="http://www.google.com", timeout=5):
+def setup_proxies():
     response = requests.get("https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"})
 
     proxies = []
@@ -37,7 +37,7 @@ def setup_proxies(test_url="http://www.google.com", timeout=5):
     ]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
-        valid_proxies = list(executor.map(lambda proxy_url: test_proxy(proxy_url, test_url, timeout), proxy_urls))
+        valid_proxies = list(executor.map(lambda proxy_url: test_proxy(proxy_url), proxy_urls))
 
     # Filter out None values
     valid_proxies = [proxy for proxy in valid_proxies if proxy]
@@ -45,15 +45,25 @@ def setup_proxies(test_url="http://www.google.com", timeout=5):
     return valid_proxies
 
 
-def test_proxy(proxy_url, test_url, timeout=3):
+def get_my_ip(proxies=None, verbose: bool = True):
     try:
-        proxy_dict = {"http": proxy_url, "https": proxy_url}
-        response = requests.get(test_url, headers=HEADERS, proxies=proxy_dict, timeout=timeout)
-        if response.status_code == 200:
-            return proxy_url
+        response = requests.get("http://httpbin.org/ip", proxies=proxies)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        ip_info = response.json()
+        return ip_info["origin"]
     except Exception as e:
-        pass
-    return None
+        if verbose:
+            print(f"An error occurred: {e}")
+        return None
+
+
+def test_proxy(proxy_url):
+    proxy_dict = {"http": proxy_url, "https": proxy_url}
+    ip = get_my_ip(proxies=proxy_dict, verbose=False)
+    if ip and ip.startswith(proxy_url.split(":")[0]):
+        return proxy_url
+    else:
+        return None
 
 
 PROXIES = setup_proxies()
@@ -95,17 +105,6 @@ def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool =
 
 
 if __name__ == "__main__":
-
-    def get_my_ip(proxies=None):
-        try:
-            response = requests.get("http://httpbin.org/ip", proxies=proxies)
-            response.raise_for_status()  # Raise an exception for HTTP errors
-            ip_info = response.json()
-            return ip_info["origin"]
-        except requests.RequestException as e:
-            print(f"An error occurred: {e}")
-            return None
-
     print("Original:", get_my_ip())
     for proxy in PROXIES:
         proxy_dict = {"http": proxy, "https": proxy}
