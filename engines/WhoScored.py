@@ -27,6 +27,7 @@ class WhoScored:
         # options.add_experimental_option("prefs", prefs)
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
         options = uc.ChromeOptions()
+        print("Using proxy: {}".format(proxy))
         options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
         options.add_argument(f"user-agent={HEADERS['user-agent']}")
         options.add_argument("--window-size=1200,1200")
