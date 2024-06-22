@@ -94,7 +94,7 @@ class WhoScored:
                 self.__init__()
                 time.sleep(5)
         print("League page status: {}".format(self.driver.execute_script("return document.readyState")))
-        # print(self.driver.page_source)
+        print(self.driver.page_source)
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
             if el.get_attribute("id") == "seasons":
