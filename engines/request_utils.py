@@ -47,7 +47,7 @@ def setup_proxies():
 
 def get_my_ip(proxies=None, verbose: bool = True):
     try:
-        response = requests.get("http://httpbin.org/ip", proxies=proxies)
+        response = requests.get("http://httpbin.org/ip", proxies=proxies, timeout=5)
         response.raise_for_status()  # Raise an exception for HTTP errors
         ip_info = response.json()
         return ip_info["origin"]
