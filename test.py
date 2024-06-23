@@ -3,7 +3,7 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium import webdriver
 import time
 
-# from engines.request_utils import get_proxy
+from engines.request_utils import get_proxy
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
@@ -22,8 +22,8 @@ if __name__ == "__main__":
         display.start()
     # url = "144.76.68.148:10801"
     options = ChromeOptions()
-    # proxy = get_proxy()
-    proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
+    proxy = get_proxy()
+    # proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
     # proxy = {"https": url, "http": url}
     print("Using proxy: {}".format(proxy))
     options.add_argument(f"user-agent={HEADERS['user-agent']}")
