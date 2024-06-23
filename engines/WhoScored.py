@@ -39,7 +39,7 @@ class WhoScored:
         options.set_preference("network.proxy.ssl_port", int(port))
         options.set_preference("general.useragent.override", HEADERS["user-agent"])
         self.driver = webdriver.Firefox(options=options)
-        self.driver.set_page_load_timeout(60)
+        # self.driver.set_page_load_timeout(60)
         # TEST IP
         # print("=====================")
         # print("Testing IP")
