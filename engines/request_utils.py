@@ -53,25 +53,30 @@ def setup_proxies():
 
     # Filter out None values
     valid_proxies = [proxy for proxy in valid_proxies if proxy]
+    print(f"Testing {len(valid_proxies)} proxies")
     valid_proxies = [proxy for proxy in valid_proxies if test_whoscored(proxy)]
     valid_proxies = list(set(valid_proxies))
     return valid_proxies
 
 
 def test_whoscored(proxy_url):
-    options = ChromeOptions()
-    options.add_argument(f"user-agent={HEADERS['user-agent']}")
-    options.add_argument("--ignore-certificate-errors")
-    options.add_argument("--proxy-server=%s" % proxy_url)
-    prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
-    options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-    driver.get("https://www.whoscored.com")
-    if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
-        driver.quit()
-        return proxy_url
-    else:
-        driver.quit()
+    try:
+        options = ChromeOptions()
+        options.add_argument(f"user-agent={HEADERS['user-agent']}")
+        options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--proxy-server=%s" % proxy_url)
+        prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
+        options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        driver.get("https://www.whoscored.com")
+        if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
+            driver.quit()
+            return proxy_url
+        else:
+            driver.quit()
+            return None
+    except Exception as e:
+        print(f"An error occurred: {e}")
         return None
 
 
