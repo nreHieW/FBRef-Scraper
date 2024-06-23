@@ -45,13 +45,20 @@ class WhoScored:
         # self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
         self.driver = webdriver.Firefox(options=options)
         # TEST IP
+        # print("=====================")
+        # print("Testing IP")
+        # print("=====================")
+        # self.driver.get("http://httpbin.org/ip")
+        # print(self.driver.find_element(By.TAG_NAME, "body").text)
+        # print("=====================")
+        # self.driver.get("https://google.com")
+
         print("=====================")
         print("Testing IP")
         print("=====================")
-        self.driver.get("http://httpbin.org/ip")
+        self.driver.get("https://bot.sannysoft.com/")
         print(self.driver.find_element(By.TAG_NAME, "body").text)
         print("=====================")
-        # self.driver.get("https://google.com")
 
         clear_output()
 
