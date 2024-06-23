@@ -56,7 +56,7 @@ class WhoScored:
         print("=====================")
         print("Testing IP")
         print("=====================")
-        self.driver.get("https://bot.sannysoft.com/")
+        self.driver.get("https://deviceandbrowserinfo.com/info_device")
         print(self.driver.find_element(By.TAG_NAME, "body").text)
         print("=====================")
 
