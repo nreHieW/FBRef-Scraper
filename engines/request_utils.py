@@ -6,6 +6,7 @@ import random
 from bs4 import BeautifulSoup
 import re
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium import webdriver
 import time
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -61,14 +62,16 @@ def setup_proxies():
 
 def test_whoscored(proxy_url):
     try:
-        options = ChromeOptions()
-        options.add_argument(f"user-agent={HEADERS['user-agent']}")
-        options.add_argument("--ignore-certificate-errors")
-        options.add_argument("--proxy-server=%s" % proxy_url)
-        prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
-        options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-        driver.set_page_load_timeout(20)
+        ip, port = proxy_url.split(":")
+        options = FirefoxOptions()
+        options.set_preference("network.proxy.type", 1)
+        options.set_preference("network.proxy.http", ip)
+        options.set_preference("network.proxy.http_port", int(port))
+        options.set_preference("network.proxy.ssl", ip)
+        options.set_preference("network.proxy.ssl_port", int(port))
+        options.set_preference("general.useragent.override", HEADERS["user-agent"])
+        driver = webdriver.Firefox(options=options)
+        driver.set_page_load_timeout(60)
         driver.get("https://www.whoscored.com")
         print("TESTING", proxy_url, driver.title)
         if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:

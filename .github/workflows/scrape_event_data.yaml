@@ -16,8 +16,8 @@ jobs:
         with:
           python-version: '3.9'
       
-      - name: setup-chromedriver
-        uses: nanasess/setup-chromedriver@v2.2.1  
+      # - name: setup-chromedriver
+      #   uses: nanasess/setup-chromedriver@v2.2.1  
 
       - name: Installing package list
         run: apt list --installed    
@@ -43,13 +43,13 @@ jobs:
       # - name: Setup Firefox
       #   uses: browser-actions/setup-firefox@v1
       
-      # - name: geckodriver/firefox
-      #   run: |
-      #     echo "geckodriver/firefox"
-      #     which geckodriver
-      #     geckodriver --version
-      #     which firefox
-      #     firefox --version
+      - name: geckodriver/firefox
+        run: |
+          echo "geckodriver/firefox"
+          which geckodriver
+          geckodriver --version
+          which firefox
+          firefox --version
 
       # - name: Test Proxies
       #   run: python engines/request_utils.py

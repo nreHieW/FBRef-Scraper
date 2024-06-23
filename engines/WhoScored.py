@@ -2,7 +2,7 @@ from selenium import webdriver
 import selenium.common.exceptions
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
-# from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -29,13 +29,16 @@ class WhoScored:
         proxy = get_proxy()  # Use proxy
         # proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
         print("Using proxy: {}".format(proxy))
-        options = ChromeOptions()
-        options.add_argument(f"user-agent={HEADERS['user-agent']}")
-        options.add_argument("--ignore-certificate-errors")
-        options.add_argument("--proxy-server=%s" % proxy["https"])
-        prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
-        options.add_experimental_option("prefs", prefs)
-        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        proxy = proxy["https"]
+        ip, port = proxy.split(":")
+        options = FirefoxOptions()
+        options.set_preference("network.proxy.type", 1)
+        options.set_preference("network.proxy.http", ip)
+        options.set_preference("network.proxy.http_port", int(port))
+        options.set_preference("network.proxy.ssl", ip)
+        options.set_preference("network.proxy.ssl_port", int(port))
+        options.set_preference("general.useragent.override", HEADERS["user-agent"])
+        self.driver = webdriver.Firefox(options=options)
         self.driver.set_page_load_timeout(60)
         # TEST IP
         print("=====================")
