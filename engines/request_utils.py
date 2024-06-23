@@ -68,6 +68,7 @@ def test_whoscored(proxy_url):
         prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
         options.add_experimental_option("prefs", prefs)
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        driver.set_page_load_timeout(20)
         driver.get("https://www.whoscored.com")
         print("TESTING", proxy_url, driver.title)
         if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
