@@ -1,8 +1,3 @@
-from engines.WhoScored import WhoScored
-import json
-import os
-import argparse
-import pandas as pd
 from utils import write_to_bq, check_size, is_ubuntu
 
 
@@ -12,6 +7,13 @@ if is_ubuntu():  # github actions
 
     display = Display(visible=0, size=(800, 800))
     display.start()
+
+from engines.WhoScored import WhoScored
+import json
+import os
+import argparse
+import pandas as pd
+
 
 LINKS_CACHE_FPATH = "data/cache/whoscored_links.txt"
 
