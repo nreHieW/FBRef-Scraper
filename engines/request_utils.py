@@ -18,34 +18,34 @@ HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 
 def setup_proxies():
-    # response = requests.get("https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"})
+    response = requests.get("https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"})
 
-    # proxies = []
-    # soup = BeautifulSoup(response.text, "html.parser")
-    # for row in soup.find_all("tr"):
-    #     tds = row.find_all("td")
-    #     if len(tds) == 0:
-    #         continue
-    #     proxies.append({"ip": tds[0].string, "port": tds[1].string})
+    proxies = []
+    soup = BeautifulSoup(response.text, "html.parser")
+    for row in soup.find_all("tr"):
+        tds = row.find_all("td")
+        if len(tds) == 0:
+            continue
+        proxies.append({"ip": tds[0].string, "port": tds[1].string})
 
-    # proxies = [x for x in proxies if "-" not in x]  # remove date
-    # response = requests.get("https://free-proxy-list.net/", headers=HEADERS)
+    proxies = [x for x in proxies if "-" not in x]  # remove date
+    response = requests.get("https://free-proxy-list.net/", headers=HEADERS)
 
-    # df = pd.read_html(response.text)[0]
-    # for _, row in df.iterrows():
-    #     proxies.append(
-    #         {
-    #             "ip": row["IP Address"],
-    #             "port": row["Port"],
-    #         }
-    #     )
-    # proxy_urls = [
-    #     f"{proxy['ip']}:{proxy['port']}"
-    #     for proxy in proxies
-    #     if proxy["ip"] and proxy["port"] and "-" not in f"{proxy['ip']}:{proxy['port']}" and len(f"{proxy['ip']}:{proxy['port']}".split(":")) == 2 and len(f"{proxy['ip']}:{proxy['port']}".split(".")) == 4
-    # ]
-    response = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
-    proxy_urls = response.text.split("\n")
+    df = pd.read_html(response.text)[0]
+    for _, row in df.iterrows():
+        proxies.append(
+            {
+                "ip": row["IP Address"],
+                "port": row["Port"],
+            }
+        )
+    proxy_urls = [
+        f"{proxy['ip']}:{proxy['port']}"
+        for proxy in proxies
+        if proxy["ip"] and proxy["port"] and "-" not in f"{proxy['ip']}:{proxy['port']}" and len(f"{proxy['ip']}:{proxy['port']}".split(":")) == 2 and len(f"{proxy['ip']}:{proxy['port']}".split(".")) == 4
+    ]
+    # response = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
+    # proxy_urls = response.text.split("\n")
 
     print(f"Found {len(proxy_urls)} proxies")
     with concurrent.futures.ThreadPoolExecutor(max_workers=25) as executor:
@@ -53,8 +53,26 @@ def setup_proxies():
 
     # Filter out None values
     valid_proxies = [proxy for proxy in valid_proxies if proxy]
+    valid_proxies = [proxy for proxy in valid_proxies if test_whoscored(proxy)]
     valid_proxies = list(set(valid_proxies))
     return valid_proxies
+
+
+def test_whoscored(proxy_url):
+    options = ChromeOptions()
+    options.add_argument(f"user-agent={HEADERS['user-agent']}")
+    options.add_argument("--ignore-certificate-errors")
+    options.add_argument("--proxy-server=%s" % proxy_url)
+    prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
+    options.add_experimental_option("prefs", prefs)
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    driver.get("https://www.whoscored.com")
+    if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
+        driver.quit()
+        return proxy_url
+    else:
+        driver.quit()
+        return None
 
 
 def get_my_ip(proxies=None, verbose: bool = True):
@@ -85,19 +103,7 @@ def test_proxy(proxy_url):
         else:
             return None
     if c == 10:
-        options = ChromeOptions()
-        options.add_argument(f"user-agent={HEADERS['user-agent']}")
-        options.add_argument("--ignore-certificate-errors")
-        options.add_argument("--proxy-server=%s" % proxy_url)
-        prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
-        options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
-        driver.get("https://www.whoscored.com")
-        if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
-            driver.quit()
-            return proxy_url
-        else:
-            driver.quit()
+        return proxy_url
     return None
 
 
