@@ -1,7 +1,8 @@
 from selenium import webdriver
+import selenium.common.exceptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 
-# from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -23,41 +24,23 @@ class WhoScored:
 
     ############################################################################
     def __init__(self):
-        options = Options()
         # # whoscored scraper CANNOT be headless
         # options.add_argument("window-size=700,600")
         proxy = get_proxy()  # Use proxy
         # proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
         print("Using proxy: {}".format(proxy))
-        # options.add_argument(f"user-agent={HEADERS['user-agent']}")
-        # options.add_argument("--ignore-certificate-errors")
-        # options.add_argument("--headless")
-        # options.add_argument("--proxy-server=%s" % proxy["https"])
-        # prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
-        # options.add_experimental_option("prefs", prefs)
-        # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
-        # options.headless = True
-        proxy = proxy["https"]
-        ip, port = proxy.split(":")
-        options.set_preference("network.proxy.type", 1)
-        options.set_preference("network.proxy.http", ip)
-        options.set_preference("network.proxy.http_port", int(port))
-        # options.set_preference("network.proxy.https", ip)
-        # options.set_preference("network.proxy.https_port", int(port))
-
-        options.set_preference("network.proxy.ssl", ip)
-        options.set_preference("network.proxy.ssl_port", int(port))
-        options.set_preference("general.useragent.override", HEADERS["user-agent"])
-
-        # self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
-        self.driver = webdriver.Firefox(options=options)
+        options = ChromeOptions()
+        options.add_argument(f"user-agent={HEADERS['user-agent']}")
+        options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--proxy-server=%s" % proxy["https"])
+        prefs = {"profile.managed_default_content_settings.images": 2}  # don't load images to make faster
+        options.add_experimental_option("prefs", prefs)
+        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        self.driver.set_page_load_timeout(60)
         # TEST IP
         print("=====================")
         print("Testing IP")
         print("=====================")
-        # print(self.driver.find_element(By.TAG_NAME, "body").text)
-
-        # print("=====================")
         self.driver.get("https://deviceandbrowserinfo.com/info_device")
         print(self.driver.find_element(By.XPATH, "/html/body/main/section/div/p[4]").text)
         print("=====================")
@@ -72,7 +55,13 @@ class WhoScored:
         self.driver.quit()
 
     def get(self, link):
-        self.driver.get(link)
+        try:
+            self.driver.get(link)
+        except selenium.common.exceptions.TimeoutException:
+            # reinit self
+            print("Timeout exception. Reinitializing webdriver.")
+            self.close()
+            self.__init__()
 
     ############################################################################
     def get_season_link(self, year, league):
