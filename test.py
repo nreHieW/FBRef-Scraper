@@ -8,9 +8,18 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 
+from utils import write_to_bq, check_size, is_ubuntu
+
+
 HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
 
 if __name__ == "__main__":
+    if is_ubuntu():  # github actions
+        print("Running on Ubuntu")
+        from pyvirtualdisplay import Display
+
+        display = Display(visible=0, size=(800, 800))
+        display.start()
     # url = "144.76.68.148:10801"
     options = ChromeOptions()
     # proxy = get_proxy()
