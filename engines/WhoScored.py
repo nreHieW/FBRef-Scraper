@@ -10,6 +10,8 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from IPython.display import clear_output
+from selenium.webdriver.common.proxy import Proxy, ProxyType
+
 from .request_utils import get_proxy, HEADERS, get_request
 import json
 import os
@@ -25,6 +27,7 @@ class WhoScored:
         # options.add_argument("window-size=700,600")
         proxy = get_proxy()  # Use proxy
         print("Using proxy: {}".format(proxy))
+
         # options.add_argument(f"user-agent={HEADERS['user-agent']}")
         # options.add_argument("--ignore-certificate-errors")
         # options.add_argument("--headless")
@@ -34,31 +37,37 @@ class WhoScored:
         # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)  # create driver
         # options.headless = True
         proxy = proxy["https"]
-        ip, port = proxy.split(":")
-        options.set_preference("network.proxy.type", 1)
-        options.set_preference("network.proxy.http", ip)
-        options.set_preference("network.proxy.http_port", int(port))
+        proxy_options = Proxy({"proxyType": ProxyType.MANUAL, "httpProxy": proxy, "sslProxy": proxy})
+
+        # Set up Firefox options
+        firefox_options = Options()
+        firefox_options.proxy = proxy_options
+        # ip, port = proxy.split(":")
+        # options.set_preference("network.proxy.type", 1)
+        # options.set_preference("network.proxy.http", ip)
+        # options.set_preference("network.proxy.http_port", int(port))
+        # # options.set_preference("network.proxy.https", ip)
+        # # options.set_preference("network.proxy.https_port", int(port))
+
         # options.set_preference("network.proxy.ssl", ip)
         # options.set_preference("network.proxy.ssl_port", int(port))
-        options.set_preference("general.useragent.override", HEADERS["user-agent"])
+        # options.set_preference("general.useragent.override", HEADERS["user-agent"])
 
         # self.driver = webdriver.Firefox(options=options, service=FirefoxService(executable_path="/usr/bin/geckodriver"))
         self.driver = webdriver.Firefox(options=options)
         # TEST IP
-        # print("=====================")
-        # print("Testing IP")
-        # print("=====================")
-        # self.driver.get("http://httpbin.org/ip")
-        # print(self.driver.find_element(By.TAG_NAME, "body").text)
-        # print("=====================")
-        # self.driver.get("https://google.com")
-
         print("=====================")
         print("Testing IP")
         print("=====================")
-        self.driver.get("https://deviceandbrowserinfo.com/info_device")
+        self.driver.get("http://httpbin.org/ip")
         print(self.driver.find_element(By.TAG_NAME, "body").text)
+
         print("=====================")
+        self.driver.get("https://deviceandbrowserinfo.com/info_device")
+        print(self.driver.find_element(By.XPATH, "/html/body/main/section/div/p[4]").text)
+        print("=====================")
+        # self.driver.close()
+        # exit()
 
         clear_output()
 

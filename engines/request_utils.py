@@ -4,6 +4,9 @@ import concurrent.futures
 import pandas as pd
 import random
 from bs4 import BeautifulSoup
+import re
+
+ip_pattern = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"
 
 HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
 
@@ -35,8 +38,8 @@ def setup_proxies():
         for proxy in proxies
         if proxy["ip"] and proxy["port"] and "-" not in f"{proxy['ip']}:{proxy['port']}" and len(f"{proxy['ip']}:{proxy['port']}".split(":")) == 2 and len(f"{proxy['ip']}:{proxy['port']}".split(".")) == 4
     ]
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+    print(f"Found {len(proxy_urls)} proxies")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=25) as executor:
         valid_proxies = list(executor.map(lambda proxy_url: test_proxy(proxy_url), proxy_urls))
 
     # Filter out None values
@@ -47,11 +50,17 @@ def setup_proxies():
 
 def get_my_ip(proxies=None, verbose: bool = True):
     try:
-        response = requests.get("http://httpbin.org/ip", proxies=proxies, timeout=5)
+        response = requests.get("https://httpbin.org/ip", proxies=proxies, timeout=5)
         response.raise_for_status()  # Raise an exception for HTTP errors
         ip_info = response.json()
-        return ip_info["origin"]
-    except Exception as e:
+        first = ip_info["origin"]
+        response = requests.get("https://deviceandbrowserinfo.com/info_device", proxies=proxies, timeout=5)
+        soup = BeautifulSoup(response.text, "html.parser")
+        second = soup.find("p", {"style": "white-space:pre;"}).text
+        second = re.findall(ip_pattern, second)[0]
+        if first == second:
+            return first
+    except requests.exceptions.RequestException as e:
         if verbose:
             print(f"An error occurred: {e}")
         return None
