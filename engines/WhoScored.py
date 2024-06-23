@@ -123,7 +123,6 @@ class WhoScored:
         print("League page status: {}".format(self.driver.execute_script("return document.readyState")))
         print(self.driver.current_url)
         print(self.driver.title)
-        print(self.driver.find_element(By.TAG_NAME, "body").text)
 
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
@@ -176,7 +175,7 @@ class WhoScored:
             done = False
             while True:
                 initial = self.driver.page_source
-                elements = self.driver.find_elements(By.TAG_NAME, "a")
+                elements = self.driver.find_elements(By.TAG_NAME, "a") or []
                 links += [el.get_attribute("href") for el in elements if "Live" in el.get_attribute("href") and "Matches" in el.get_attribute("href")]
 
                 links = list(set(links))
