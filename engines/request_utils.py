@@ -19,34 +19,34 @@ HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 
 def setup_proxies():
-    response = requests.get("https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"})
+    # response = requests.get("https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"})
 
-    proxies = []
-    soup = BeautifulSoup(response.text, "html.parser")
-    for row in soup.find_all("tr"):
-        tds = row.find_all("td")
-        if len(tds) == 0:
-            continue
-        proxies.append({"ip": tds[0].string, "port": tds[1].string})
+    # proxies = []
+    # soup = BeautifulSoup(response.text, "html.parser")
+    # for row in soup.find_all("tr"):
+    #     tds = row.find_all("td")
+    #     if len(tds) == 0:
+    #         continue
+    #     proxies.append({"ip": tds[0].string, "port": tds[1].string})
 
-    proxies = [x for x in proxies if "-" not in x]  # remove date
-    response = requests.get("https://free-proxy-list.net/", headers=HEADERS)
+    # proxies = [x for x in proxies if "-" not in x]  # remove date
+    # response = requests.get("https://free-proxy-list.net/", headers=HEADERS)
 
-    df = pd.read_html(response.text)[0]
-    for _, row in df.iterrows():
-        proxies.append(
-            {
-                "ip": row["IP Address"],
-                "port": row["Port"],
-            }
-        )
-    proxy_urls = [
-        f"{proxy['ip']}:{proxy['port']}"
-        for proxy in proxies
-        if proxy["ip"] and proxy["port"] and "-" not in f"{proxy['ip']}:{proxy['port']}" and len(f"{proxy['ip']}:{proxy['port']}".split(":")) == 2 and len(f"{proxy['ip']}:{proxy['port']}".split(".")) == 4
-    ]
-    # response = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
-    # proxy_urls = response.text.split("\n")
+    # df = pd.read_html(response.text)[0]
+    # for _, row in df.iterrows():
+    #     proxies.append(
+    #         {
+    #             "ip": row["IP Address"],
+    #             "port": row["Port"],
+    #         }
+    #     )
+    # proxy_urls = [
+    #     f"{proxy['ip']}:{proxy['port']}"
+    #     for proxy in proxies
+    #     if proxy["ip"] and proxy["port"] and "-" not in f"{proxy['ip']}:{proxy['port']}" and len(f"{proxy['ip']}:{proxy['port']}".split(":")) == 2 and len(f"{proxy['ip']}:{proxy['port']}".split(".")) == 4
+    # ]
+    response = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
+    proxy_urls = response.text.split("\n")
 
     print(f"Found {len(proxy_urls)} proxies")
     with concurrent.futures.ThreadPoolExecutor(max_workers=25) as executor:

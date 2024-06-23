@@ -41,12 +41,12 @@ class WhoScored:
         self.driver = webdriver.Firefox(options=options)
         self.driver.set_page_load_timeout(60)
         # TEST IP
-        print("=====================")
-        print("Testing IP")
-        print("=====================")
-        self.driver.get("https://deviceandbrowserinfo.com/info_device")
-        print(self.driver.find_element(By.XPATH, "/html/body/main/section/div/p[4]").text)
-        print("=====================")
+        # print("=====================")
+        # print("Testing IP")
+        # print("=====================")
+        # self.driver.get("https://deviceandbrowserinfo.com/info_device")
+        # print(self.driver.find_element(By.XPATH, "/html/body/main/section/div/p[4]").text)
+        # print("=====================")
         # self.driver.close()
         # exit()
 
