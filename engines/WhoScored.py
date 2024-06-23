@@ -178,8 +178,7 @@ class WhoScored:
             while True:
                 initial = self.driver.page_source
                 elements = self.driver.find_elements(By.TAG_NAME, "a") or []
-                print(elements)
-                links += [el.get_attribute("href") for el in elements if "Live" in el.get_attribute("href") and "Matches" in el.get_attribute("href")]
+                links += [el.get_attribute("href") for el in elements if el.get_attribute("href") and "Live" in el.get_attribute("href") and "Matches" in el.get_attribute("href")]
 
                 links = list(set(links))
                 prev_week_button = self.driver.find_element(By.ID, "dayChangeBtn-prev")
