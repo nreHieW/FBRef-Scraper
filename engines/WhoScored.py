@@ -55,7 +55,6 @@ class WhoScored:
         print("=====================")
         print("Testing IP")
         print("=====================")
-        # self.driver.get("http://httpbin.org/ip")
         # print(self.driver.find_element(By.TAG_NAME, "body").text)
 
         # print("=====================")
@@ -71,6 +70,9 @@ class WhoScored:
     def close(self):
         self.driver.close()
         self.driver.quit()
+
+    def get(self, link):
+        self.driver.get(link)
 
     ############################################################################
     def get_season_link(self, year, league):
@@ -113,7 +115,7 @@ class WhoScored:
         done = False
         while not done:
             try:
-                self.driver.get(links[league])
+                self.get(links[league])
                 done = True
             except Exception as e:
                 print(e)
@@ -145,7 +147,7 @@ class WhoScored:
         done = False
         while not done:
             try:
-                self.driver.get(season_link)
+                self.get(season_link)
                 done = True
             except Exception as e:
                 print(e)
@@ -168,7 +170,7 @@ class WhoScored:
         print(stage_urls)
         # Iterate through the stages
         for stage_url in stage_urls:
-            self.driver.get(stage_url)
+            self.get(stage_url)
 
             print("{} status: {}".format(stage_url, self.driver.execute_script("return document.readyState")))
 
@@ -227,7 +229,7 @@ class WhoScored:
 
     ############################################################################
     def scrape_match(self, link):
-        self.driver.get(link)
+        self.get(link)
         scripts = list()
 
         for el in self.driver.find_elements(By.TAG_NAME, "script"):

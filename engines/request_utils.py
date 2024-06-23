@@ -69,6 +69,7 @@ def test_whoscored(proxy_url):
         options.add_experimental_option("prefs", prefs)
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
         driver.get("https://www.whoscored.com")
+        print("TESTING", proxy_url, driver.title)
         if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
             driver.quit()
             return proxy_url
