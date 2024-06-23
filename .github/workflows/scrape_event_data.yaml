@@ -53,8 +53,8 @@ jobs:
 
       # - name: Test Proxies
       #   run: python engines/request_utils.py
-      - name : test
-        run: python test.py
+      # - name : test
+      #   run: python test.py
 
       - name: Running the Python script
         env: 

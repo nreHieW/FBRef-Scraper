@@ -11,7 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 from IPython.display import clear_output
 
-# from .request_utils import get_proxy, HEADERS, get_request
+from .request_utils import get_proxy, HEADERS, get_request
 import json
 import os
 from tqdm import tqdm
@@ -26,8 +26,8 @@ class WhoScored:
         options = Options()
         # # whoscored scraper CANNOT be headless
         # options.add_argument("window-size=700,600")
-        # proxy = get_proxy()  # Use proxy
-        proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
+        proxy = get_proxy()  # Use proxy
+        # proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
         print("Using proxy: {}".format(proxy))
         # options.add_argument(f"user-agent={HEADERS['user-agent']}")
         # options.add_argument("--ignore-certificate-errors")
@@ -176,6 +176,7 @@ class WhoScored:
             while True:
                 initial = self.driver.page_source
                 elements = self.driver.find_elements(By.TAG_NAME, "a") or []
+                print(elements)
                 links += [el.get_attribute("href") for el in elements if "Live" in el.get_attribute("href") and "Matches" in el.get_attribute("href")]
 
                 links = list(set(links))
