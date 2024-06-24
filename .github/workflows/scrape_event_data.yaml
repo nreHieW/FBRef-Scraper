@@ -50,9 +50,9 @@ jobs:
           geckodriver --version
           which firefox
           firefox --version
-
-      - name: Configure Proxies
-        run: python engines/request_utils.py
+      # need to run the virtual display
+      # - name: Configure Proxies
+      #   run: python engines/request_utils.py
 
       - name: Running the Python script
         env: 
