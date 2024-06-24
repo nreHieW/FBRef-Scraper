@@ -161,6 +161,8 @@ def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool =
 
 if __name__ == "__main__":
     print("Original:", get_my_ip())
+    while len(PROXIES) < 1:
+        PROXIES = setup_proxies()
     for proxy in PROXIES:
         proxy_dict = {"http": proxy, "https": proxy}
         print(f"Using {proxy}, IP:", get_my_ip(proxies=proxy_dict))
