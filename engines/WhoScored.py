@@ -9,34 +9,10 @@ import time
 from bs4 import BeautifulSoup
 
 from .request_utils import get_proxy, HEADERS, get_request
+from utils import print_system_usage
 import json
 import os
 from tqdm import tqdm
-
-import psutil
-
-
-def print_system_usage():
-    # Get RAM usage
-    ram = psutil.virtual_memory()
-    ram_total = ram.total / (1024**3)  # Convert bytes to GB
-    ram_used = ram.used / (1024**3)  # Convert bytes to GB
-    ram_free = ram.free / (1024**3)  # Convert bytes to GB
-
-    # Get Disk usage
-    disk = psutil.disk_usage("/")
-    disk_total = disk.total / (1024**3)  # Convert bytes to GB
-    disk_used = disk.used / (1024**3)  # Convert bytes to GB
-    disk_free = disk.free / (1024**3)  # Convert bytes to GB
-
-    # Print the results
-    print(f"RAM Total: {ram_total:.2f} GB")
-    print(f"RAM Used: {ram_used:.2f} GB")
-    print(f"RAM Free: {ram_free:.2f} GB")
-
-    print(f"Disk Total: {disk_total:.2f} GB")
-    print(f"Disk Used: {disk_used:.2f} GB")
-    print(f"Disk Free: {disk_free:.2f} GB")
 
 
 HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
@@ -71,7 +47,20 @@ class WhoScored:
         options.add_argument("--disable-application-cache")
         options.add_argument("--disable-gpu")
         options.add_argument("--disable-dev-shm-usage")
-        self.driver = webdriver.Firefox(options=options)
+        try:
+            self.driver = webdriver.Firefox(options=options)
+        except Exception as e:
+            print("Error starting webdriver. Trying again.")
+            proxy = get_proxy()  # Use proxy
+            proxy = proxy["https"]
+            ip, port = proxy.split(":")
+            options.set_preference("network.proxy.type", 1)
+            options.set_preference("network.proxy.http", ip)
+            options.set_preference("network.proxy.http_port", int(port))
+            options.set_preference("network.proxy.ssl", ip)
+            options.set_preference("network.proxy.ssl_port", int(port))
+
+            self.driver = webdriver.Firefox(options=options)
 
     ############################################################################
     def close(self):

@@ -1,4 +1,4 @@
-from utils import write_to_bq, check_size, is_ubuntu
+from utils import write_to_bq, check_size, is_ubuntu, print_system_usage
 
 
 if is_ubuntu():  # github actions
@@ -7,6 +7,8 @@ if is_ubuntu():  # github actions
 
     display = Display(visible=0, size=(800, 800))
     display.start()
+print("Starting stats: ")
+print_system_usage()
 
 from engines.WhoScored import WhoScored
 import json

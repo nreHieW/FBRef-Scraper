@@ -76,9 +76,11 @@ def test_whoscored(proxy_url, timeout=60):
         driver.get("https://www.whoscored.com")
         print("TESTING", proxy_url, driver.title)
         if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
+            driver.close()
             driver.quit()
             return proxy_url
         else:
+            driver.close()
             driver.quit()
             return None
     except Exception as e:

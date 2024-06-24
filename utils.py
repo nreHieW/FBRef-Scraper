@@ -3,6 +3,7 @@ import json
 import pandas as pd
 from google.cloud import bigquery
 import difflib
+import psutil
 
 
 def write_to_bq(df: pd.DataFrame, name: str, dataset_name: str, write_type="APPEND"):  # writes to bigquery, types supported are APPEND or WRITE_TRUNCATE
@@ -103,3 +104,26 @@ def is_ubuntu():
                 return False
     except FileNotFoundError:
         return False
+
+
+def print_system_usage():
+    # Get RAM usage
+    ram = psutil.virtual_memory()
+    ram_total = ram.total / (1024**3)  # Convert bytes to GB
+    ram_used = ram.used / (1024**3)  # Convert bytes to GB
+    ram_free = ram.free / (1024**3)  # Convert bytes to GB
+
+    # Get Disk usage
+    disk = psutil.disk_usage("/")
+    disk_total = disk.total / (1024**3)  # Convert bytes to GB
+    disk_used = disk.used / (1024**3)  # Convert bytes to GB
+    disk_free = disk.free / (1024**3)  # Convert bytes to GB
+
+    # Print the results
+    print(f"RAM Total: {ram_total:.2f} GB")
+    print(f"RAM Used: {ram_used:.2f} GB")
+    print(f"RAM Free: {ram_free:.2f} GB")
+
+    print(f"Disk Total: {disk_total:.2f} GB")
+    print(f"Disk Used: {disk_used:.2f} GB")
+    print(f"Disk Free: {disk_free:.2f} GB")
