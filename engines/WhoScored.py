@@ -217,7 +217,7 @@ class WhoScored:
 
         # Scrape match data for each link
         i = 0
-        for link in tqdm(match_data):
+        for link in tqdm(match_data, desc=f"Scraping {league} {year - 1}-{year} matches", total=len(match_data)):
             i += 1
             try_count = 0
             while match_data[link] == "":
