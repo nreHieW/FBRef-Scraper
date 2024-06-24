@@ -8,6 +8,7 @@ import os
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium import webdriver
 import time
+import json
 
 ip_pattern = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"
 
@@ -48,6 +49,9 @@ def setup_proxies():
     ]
     response = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
     proxy_urls += response.text.split("\n")
+
+    r = requests.get("https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/json/proxies.json")
+    proxy_urls += json.loads(r.text)["https"]
     proxy_urls = list(set(proxy_urls))
 
     print(f"Found {len(proxy_urls)} proxies")
@@ -59,6 +63,10 @@ def setup_proxies():
     print(f"Testing {len(valid_proxies)} proxies")
     valid_proxies = [proxy for proxy in valid_proxies if test_whoscored(proxy, timeout=20)]
     valid_proxies = list(set(valid_proxies))
+    if len(valid_proxies) < 1:
+        print("No valid proxies found. Retrying after 5 mins")
+        time.sleep(300)
+        return setup_proxies()
     return valid_proxies
 
 
