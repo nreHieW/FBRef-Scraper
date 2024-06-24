@@ -39,10 +39,6 @@ def print_system_usage():
     print(f"Disk Free: {disk_free:.2f} GB")
 
 
-# Call the function
-print_system_usage()
-
-
 HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
 
 
@@ -68,6 +64,13 @@ class WhoScored:
         options.set_preference("permissions.default.image", 2)
         options.page_load_strategy = "eager"
         options.set_preference("dom.ipc.plugins.enabled.libflashplayer.so", "false")
+        options.add_argument("start-maximized")
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-application-cache")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-dev-shm-usage")
         self.driver = webdriver.Firefox(options=options)
 
     ############################################################################
@@ -237,6 +240,7 @@ class WhoScored:
         # Scrape match data for each link
         i = 0
         for link in tqdm(match_data, desc=f"Scraping {league} {year - 1}-{year} matches", total=len(match_data)):
+            time.sleep(3)
             print_system_usage()
             i += 1
             try_count = 0
