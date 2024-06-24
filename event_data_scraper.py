@@ -1,4 +1,4 @@
-from utils import write_to_bq, check_size, is_ubuntu, print_system_usage
+from utils import write_to_bq, check_size, is_ubuntu, get_system_usage
 
 
 if is_ubuntu():  # github actions
@@ -7,14 +7,13 @@ if is_ubuntu():  # github actions
 
     display = Display(visible=0, size=(800, 800))
     display.start()
-print("Starting stats: ")
-print_system_usage()
-
 from engines.WhoScored import WhoScored
 import json
 import os
 import argparse
 import pandas as pd
+
+pd.options.mode.chained_assignment = None
 
 
 LINKS_CACHE_FPATH = "data/cache/whoscored_links.txt"
@@ -133,10 +132,12 @@ def parse_match(match, QUAL_DICT):  # pass a single match and returns a processe
                 for k, v in tmp.items():
                     if v != True and v != "0":
                         if k in dataframe.columns:
-                            dataframe[k][i] = v
+                            # dataframe[k][i] = v
+                            dataframe.loc[i, k] = v
                         else:
                             dataframe[k] = pd.Series([], dtype="float64")
-                            dataframe[k][i] = v
+                            dataframe.loc[i, k] = v
+
                         to_del.append(k)
                     else:
                         exist.append(k)
@@ -294,10 +295,12 @@ if __name__ == "__main__":
     with open(LINKS_CACHE_FPATH, "r") as f:
         cached_urls = f.read().split()
     print("Before Scraping")
-    print_system_usage()
+    usage = get_system_usage()
+    print(f"\033[92mRAM: {usage['ram']['used']:.2f}GB/{usage['ram']['total']:.2f}GB, Free: {usage['ram']['free']:.2f}GB\033[0m")
     scraper = WhoScored()
     print("After initializing scraper")
-    print_system_usage()
+    usage = get_system_usage()
+    print(f"\033[92mRAM: {usage['ram']['used']:.2f}GB/{usage['ram']['total']:.2f}GB, Free: {usage['ram']['free']:.2f}GB\033[0m")
 
     for league in LEAGUES:
         for year in YEARS:
@@ -312,6 +315,9 @@ if __name__ == "__main__":
                     json.dump(match_data, f)
                 # print(f"Found a total of {len(links)} new matches for", league, year)
             _ = scraper.scrape_matches(year, league, filename)
+            usage = get_system_usage()
+            print(f"\033[92mRAM: {usage['ram']['used']:.2f}GB/{usage['ram']['total']:.2f}GB, Free: {usage['ram']['free']:.2f}GB\033[0m")
+            print(f"\033[92mDisk: {usage['disk']['used']:.2f}GB/{usage['disk']['total']:.2f}GB, Free: {usage['disk']['free']:.2f}GB\033[0m")
     scraper.close()
 
     # PARSING
@@ -388,7 +394,7 @@ if __name__ == "__main__":
                 pass
 
             # write the events table
-            table_name = league + "_" + year
+            table_name = f"{league}_{year}"
             events["Qualifiers"] = events["Qualifiers"].apply(lambda x: [int(i) for i in x])
             events["SatisfiedEventsTypes"] = events["SatisfiedEventsTypes"].apply(lambda x: [int(i) for i in x])
 

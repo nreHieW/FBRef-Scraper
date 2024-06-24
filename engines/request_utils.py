@@ -58,8 +58,8 @@ def setup_proxies():
 
     proxy_urls = list(set(proxy_urls))
 
-    print(f"Found {len(proxy_urls)} proxies, using 7000 to test")
-    proxy_urls = random.sample(proxy_urls, 7000)
+    print(f"Found {len(proxy_urls)} proxies, using 10000 sample to test")
+    proxy_urls = random.sample(proxy_urls, 10000)
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
         valid_proxies = list(tqdm(executor.map(test_proxy, proxy_urls), total=len(proxy_urls)))
 
@@ -69,8 +69,7 @@ def setup_proxies():
     valid_proxies = [proxy for proxy in valid_proxies if test_whoscored(proxy, timeout=20)]
     valid_proxies = list(set(valid_proxies))
     if len(valid_proxies) < 1:
-        print("No valid proxies found. Retrying after 5 mins")
-        time.sleep(300)
+        print("No valid proxies found. Retrying")
         return setup_proxies()
     return valid_proxies
 
@@ -107,19 +106,19 @@ def test_whoscored(proxy_url, timeout=60):
 def get_my_ip(proxies=None, verbose: bool = True):
     try:
         # HTTP
-        # response = requests.get("https://httpbin.org/ip", proxies=proxies, timeout=5)
-        # response.raise_for_status()  # Raise an exception for HTTP errors
-        # ip_info = response.json()
-        # first = ip_info["origin"]
+        response = requests.get("https://httpbin.org/ip", proxies=proxies, timeout=5)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        ip_info = response.json()
+        first = ip_info.get("origin")
 
         # HTTPS
-        response = requests.get("https://deviceandbrowserinfo.com/info_device", proxies=proxies, timeout=5)
-        soup = BeautifulSoup(response.text, "html.parser")
-        second = soup.find("p", {"style": "white-space:pre;"}).text
-        second = re.findall(ip_pattern, second)[0]
+        # response = requests.get("https://deviceandbrowserinfo.com/info_device", proxies=proxies, timeout=5)
+        # soup = BeautifulSoup(response.text, "html.parser")
+        # second = soup.find("p", {"style": "white-space:pre;"}).text
+        # second = re.findall(ip_pattern, second)[0]
         # if first == second:
-        # return first
-        return second
+        return first
+        # return second
     except requests.exceptions.RequestException as e:
         if verbose:
             print(f"An error occurred: {e}")

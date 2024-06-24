@@ -9,7 +9,7 @@ import time
 from bs4 import BeautifulSoup
 
 from .request_utils import get_proxy, HEADERS, get_request
-from utils import print_system_usage
+from utils import get_system_usage
 import json
 import os
 from tqdm import tqdm
@@ -72,6 +72,14 @@ class WhoScored:
             self.driver.get(link)
             # Click the cookies button
             self.click_cookie_button()
+
+            # Check ram usage
+            system_usage = get_system_usage()
+            ram_amt_free = system_usage["ram"]["free"]  # in GB
+            if ram_amt_free < 0.75:
+                print(f"RAM usage is {ram_amt_free}. Restarting webdriver.")
+                self.close()
+                self.__init__()
         except selenium.common.exceptions.TimeoutException:
             # reinit self
             print("Timeout exception. Reinitializing webdriver.")
@@ -189,10 +197,6 @@ class WhoScored:
                 #     urls = [el.get_attribute("href") for el in elements]
 
                 # Beautiful soup since we dont care for the elements, just the hrefs
-                # soup = BeautifulSoup(self.driver.page_source, "html.parser")
-                # elements = soup.find_all("a", class_="result-1 rc")
-                # links += [el.get("href") for el in elements if el.get("href") is not None]
-                # links += [el.get_attribute("href") for el in elements if el.get_attribute("href") and "Live" in el.get_attribute("href") and "Matches" in el.get_attribute("href")]
 
                 soup = BeautifulSoup(self.driver.page_source, "html.parser")
                 all_fixtures = soup.find_all(class_="Accordion-module_accordion__UuHD0")
@@ -230,7 +234,6 @@ class WhoScored:
         i = 0
         for link in tqdm(match_data, desc=f"Scraping {league} {year - 1}-{year} matches", total=len(match_data)):
             time.sleep(3)
-            print_system_usage()
             i += 1
             try_count = 0
             while match_data[link] == "":

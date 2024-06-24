@@ -106,7 +106,7 @@ def is_ubuntu():
         return False
 
 
-def print_system_usage():
+def get_system_usage():
     # Get RAM usage
     ram = psutil.virtual_memory()
     ram_total = ram.total / (1024**3)  # Convert bytes to GB
@@ -119,8 +119,4 @@ def print_system_usage():
     disk_used = disk.used / (1024**3)  # Convert bytes to GB
     disk_free = disk.free / (1024**3)  # Convert bytes to GB
 
-    # Print the results in green
-    # print(f"RAM: {ram_used:.2f}GB/{ram_total:.2f}GB, Free: {ram_free:.2f}GB")
-    # print(f"Disk: {disk_used:.2f}GB/{disk_total:.2f}GB, Free: {disk_free:.2f}GB")
-    print(f"\033[92mRAM: {ram_used:.2f}GB/{ram_total:.2f}GB, Free: {ram_free:.2f}GB\033[0m")
-    print(f"\033[92mDisk: {disk_used:.2f}GB/{disk_total:.2f}GB, Free: {disk_free:.2f}GB\033[0m")
+    return {"ram": {"total": ram_total, "used": ram_used, "free": ram_free}, "disk": {"total": disk_total, "used": disk_used, "free": disk_free}}

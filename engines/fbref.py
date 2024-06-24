@@ -1,6 +1,5 @@
 """Edited version of sfc.FBRref.py"""
 
-from IPython.display import clear_output
 import numpy as np
 import pandas as pd
 from ScraperFC.shared_functions import xpath_soup, sources
