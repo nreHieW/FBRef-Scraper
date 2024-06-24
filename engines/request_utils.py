@@ -54,11 +54,12 @@ def setup_proxies():
 
     response = requests.get("https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt")
     tmp = response.text.split("\n")
-    proxy_urls += random.sample(tmp, 2000)
+    proxy_urls += tmp
 
     proxy_urls = list(set(proxy_urls))
 
-    print(f"Found {len(proxy_urls)} proxies")
+    print(f"Found {len(proxy_urls)} proxies, using 7000 to test")
+    proxy_urls = random.sample(proxy_urls, 7000)
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
         valid_proxies = list(tqdm(executor.map(test_proxy, proxy_urls), total=len(proxy_urls)))
 
@@ -77,15 +78,12 @@ def setup_proxies():
 def test_whoscored(proxy_url, timeout=60):
     ip, port = proxy_url.split(":")
     options = FirefoxOptions()
-    # options.set_preference("network.proxy.type", 1)
-    # options.set_preference("network.proxy.http", ip)
-    # options.set_preference("network.proxy.http_port", int(port))
-    # options.set_preference("network.proxy.ssl", ip)
-    # options.set_preference("network.proxy.ssl_port", int(port))
-    # options.set_preference("general.useragent.override", HEADERS["user-agent"])
-    proxy = f"{ip}:{port}"
-    options.add_argument(f"user-agent={HEADERS['user-agent']}")
-    options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+    options.set_preference("network.proxy.type", 1)
+    options.set_preference("network.proxy.http", ip)
+    options.set_preference("network.proxy.http_port", int(port))
+    options.set_preference("network.proxy.ssl", ip)
+    options.set_preference("network.proxy.ssl_port", int(port))
+    options.set_preference("general.useragent.override", HEADERS["user-agent"])
     driver = webdriver.Firefox(options=options)
     try:
         driver.set_page_load_timeout(timeout)
