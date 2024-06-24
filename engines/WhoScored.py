@@ -24,7 +24,6 @@ class WhoScored:
         # options.add_argument("window-size=700,600")
         proxy = get_proxy()  # Use proxy
         # proxy = {"http": "185.222.115.104:31280", "https": "185.222.115.104:31280"}
-        # proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
         print("Using proxy: {}".format(proxy))
         proxy = proxy["https"]
         ip, port = proxy.split(":")

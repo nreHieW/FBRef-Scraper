@@ -56,12 +56,12 @@ def setup_proxies():
     # Filter out None values
     valid_proxies = [proxy for proxy in valid_proxies if proxy]
     print(f"Testing {len(valid_proxies)} proxies")
-    valid_proxies = [proxy for proxy in valid_proxies if test_whoscored(proxy)]
+    valid_proxies = [proxy for proxy in valid_proxies if test_whoscored(proxy, timeout=20)]
     valid_proxies = list(set(valid_proxies))
     return valid_proxies
 
 
-def test_whoscored(proxy_url):
+def test_whoscored(proxy_url, timeout=60):
     try:
         ip, port = proxy_url.split(":")
         options = FirefoxOptions()
@@ -72,7 +72,7 @@ def test_whoscored(proxy_url):
         options.set_preference("network.proxy.ssl_port", int(port))
         options.set_preference("general.useragent.override", HEADERS["user-agent"])
         driver = webdriver.Firefox(options=options)
-        driver.set_page_load_timeout(60)
+        driver.set_page_load_timeout(timeout)
         driver.get("https://www.whoscored.com")
         print("TESTING", proxy_url, driver.title)
         if "Football Statistics | Football Live Scores | WhoScored.com" in driver.title:
@@ -82,7 +82,7 @@ def test_whoscored(proxy_url):
             driver.quit()
             return None
     except Exception as e:
-        print(f"An error occurred: {e}")
+        # print(f"An error occurred: {e}")
         return None
 
 
