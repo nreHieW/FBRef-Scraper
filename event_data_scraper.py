@@ -283,7 +283,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scrape WhoScored Data")
     parser.add_argument("--start", type=int, help="Start year", default=2024)
     parser.add_argument("--end", type=int, help="End year", default=2024)
-    parser.add_argument("--leagues", nargs="+", default=["Bundesliga"])
+    # parser.add_argument("--leagues", nargs="+", default=["Bundesliga", "La Liga", "Serie A", "Ligue 1", "EPL"])
+    parser.add_argument("--leagues", nargs="+", default=["EPL"])
     args = parser.parse_args()
     YEARS = list(range(args.start, args.end + 1))
     LEAGUES = args.leagues

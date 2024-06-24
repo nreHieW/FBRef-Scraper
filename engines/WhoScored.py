@@ -1,18 +1,14 @@
 from selenium import webdriver
 import selenium.common.exceptions
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
-from IPython.display import clear_output
+from bs4 import BeautifulSoup
 
-from .request_utils import get_proxy, HEADERS, get_request
+# from .request_utils import get_proxy, HEADERS, get_request
 import json
 import os
 from tqdm import tqdm
@@ -26,7 +22,8 @@ class WhoScored:
     def __init__(self):
         # # whoscored scraper CANNOT be headless
         # options.add_argument("window-size=700,600")
-        proxy = get_proxy()  # Use proxy
+        # proxy = get_proxy()  # Use proxy
+        proxy = {"http": "185.222.115.104:31280", "https": "185.222.115.104:31280"}
         # proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
         print("Using proxy: {}".format(proxy))
         proxy = proxy["https"]
@@ -38,6 +35,10 @@ class WhoScored:
         options.set_preference("network.proxy.ssl", ip)
         options.set_preference("network.proxy.ssl_port", int(port))
         options.set_preference("general.useragent.override", HEADERS["user-agent"])
+        options.set_preference("permissions.default.stylesheet", 2)
+        options.set_preference("permissions.default.image", 2)
+        options.page_load_strategy = "eager"
+        options.set_preference("dom.ipc.plugins.enabled.libflashplayer.so", "false")
         self.driver = webdriver.Firefox(options=options)
         # self.driver.set_page_load_timeout(60)
         # TEST IP
@@ -50,8 +51,6 @@ class WhoScored:
         # self.driver.close()
         # exit()
 
-        clear_output()
-
     ############################################################################
     def close(self):
         self.driver.close()
@@ -60,11 +59,19 @@ class WhoScored:
     def get(self, link):
         try:
             self.driver.get(link)
+            # Click the cookies button
+            self.click_cookie_button()
         except selenium.common.exceptions.TimeoutException:
             # reinit self
             print("Timeout exception. Reinitializing webdriver.")
             self.close()
             self.__init__()
+
+    def click_cookie_button(self):
+        cookies_button = self.driver.find_elements(By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/button[2]")
+        if cookies_button:
+            cookies_button[0].click()
+            # print("Clicked cookies button")
 
     ############################################################################
     def get_season_link(self, year, league):
@@ -114,9 +121,7 @@ class WhoScored:
                 self.close()
                 self.__init__()
                 time.sleep(5)
-        print("League page status: {}".format(self.driver.execute_script("return document.readyState")))
-        print(self.driver.current_url)
-        print(self.driver.title)
+        print("League page status: {}".format(self.driver.execute_script("return document.readyState")), "at", self.driver.title)
 
         # Wait for season dropdown to be accessible, then find the link to the chosen season
         for el in self.driver.find_elements(By.TAG_NAME, "select"):
@@ -159,7 +164,6 @@ class WhoScored:
                 self.driver.current_url,
             ]
         print("Found {} stages".format(len(stage_urls)))
-        print(stage_urls)
         # Iterate through the stages
         for stage_url in stage_urls:
             self.get(stage_url)
@@ -169,15 +173,34 @@ class WhoScored:
             done = False
             while True:
                 initial = self.driver.page_source
-                elements = self.driver.find_elements(By.TAG_NAME, "a") or []
-                links += [el.get_attribute("href") for el in elements if el.get_attribute("href") and "Live" in el.get_attribute("href") and "Matches" in el.get_attribute("href")]
+                # there is a weird stale element exception that occurs here
+                #     elements = self.driver.find_elements(By.TAG_NAME, "a")
+                #     urls = [el.get_attribute("href") for el in elements]
+
+                # Beautiful soup since we dont care for the elements, just the hrefs
+                # soup = BeautifulSoup(self.driver.page_source, "html.parser")
+                # elements = soup.find_all("a", class_="result-1 rc")
+                # links += [el.get("href") for el in elements if el.get("href") is not None]
+                # links += [el.get_attribute("href") for el in elements if el.get_attribute("href") and "Live" in el.get_attribute("href") and "Matches" in el.get_attribute("href")]
+
+                soup = BeautifulSoup(self.driver.page_source, "html.parser")
+                all_fixtures = soup.find_all(class_="Accordion-module_accordion__UuHD0")
+                for dates in all_fixtures:
+                    fixtures = dates.find_all(class_="Match-module_row__zwBOn")
+                    for row in fixtures:
+                        link_tag = row.find("a")
+                        if link_tag and "Live" in link_tag.get("href"):
+                            links.append("https://www.whoscored.com/" + link_tag["href"])
 
                 links = list(set(links))
+                # print(len(links), "matches found")
                 prev_week_button = self.driver.find_element(By.ID, "dayChangeBtn-prev")
+                self.click_cookie_button()  # This is to prevent some weird overlay thing from blocking the button
                 prev_week_button.click()
                 time.sleep(1)
                 if initial == self.driver.page_source:  # if the page didn't change, then we've reached the end
                     break
+        # print(list(set(links)))
         return list(set(links))
 
     def scrape_matches(self, year, league, path):
@@ -203,10 +226,11 @@ class WhoScored:
                     print("Failed to scrape match {}/{} from {}".format(i, len(match_data), link))
                     return -1
                 try:
-                    print("{}\rScraping match data for match {}/{} in the {}-{} {} season from {}".format(" " * 500, i, len(match_data), year - 1, year, league, link), end="\r")
+                    # print("{}\rScraping match data for match {}/{} in the {}-{} {} season from {}".format(" " * 500, i, len(match_data), year - 1, year, league, link), end="\r")
                     match_data[link] = self.scrape_match(link)
-                except:
+                except Exception as e:
                     print("\n\nError encountered. Saving output and restarting webdriver.")
+                    print(e)
                     with open(save_filename, "w") as f:
                         f.write(json.dumps(match_data))
                     self.close()
