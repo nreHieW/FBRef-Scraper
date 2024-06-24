@@ -13,6 +13,36 @@ import json
 import os
 from tqdm import tqdm
 
+import psutil
+
+
+def print_system_usage():
+    # Get RAM usage
+    ram = psutil.virtual_memory()
+    ram_total = ram.total / (1024**3)  # Convert bytes to GB
+    ram_used = ram.used / (1024**3)  # Convert bytes to GB
+    ram_free = ram.free / (1024**3)  # Convert bytes to GB
+
+    # Get Disk usage
+    disk = psutil.disk_usage("/")
+    disk_total = disk.total / (1024**3)  # Convert bytes to GB
+    disk_used = disk.used / (1024**3)  # Convert bytes to GB
+    disk_free = disk.free / (1024**3)  # Convert bytes to GB
+
+    # Print the results
+    print(f"RAM Total: {ram_total:.2f} GB")
+    print(f"RAM Used: {ram_used:.2f} GB")
+    print(f"RAM Free: {ram_free:.2f} GB")
+
+    print(f"Disk Total: {disk_total:.2f} GB")
+    print(f"Disk Used: {disk_used:.2f} GB")
+    print(f"Disk Free: {disk_free:.2f} GB")
+
+
+# Call the function
+print_system_usage()
+
+
 HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
 
 
@@ -39,16 +69,6 @@ class WhoScored:
         options.page_load_strategy = "eager"
         options.set_preference("dom.ipc.plugins.enabled.libflashplayer.so", "false")
         self.driver = webdriver.Firefox(options=options)
-        # self.driver.set_page_load_timeout(60)
-        # TEST IP
-        # print("=====================")
-        # print("Testing IP")
-        # print("=====================")
-        # self.driver.get("https://deviceandbrowserinfo.com/info_device")
-        # print(self.driver.find_element(By.XPATH, "/html/body/main/section/div/p[4]").text)
-        # print("=====================")
-        # self.driver.close()
-        # exit()
 
     ############################################################################
     def close(self):
@@ -217,6 +237,7 @@ class WhoScored:
         # Scrape match data for each link
         i = 0
         for link in tqdm(match_data, desc=f"Scraping {league} {year - 1}-{year} matches", total=len(match_data)):
+            print_system_usage()
             i += 1
             try_count = 0
             while match_data[link] == "":
