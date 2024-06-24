@@ -51,7 +51,7 @@ def setup_proxies():
     proxy_urls = list(set(proxy_urls))
 
     print(f"Found {len(proxy_urls)} proxies")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=25) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
         valid_proxies = list(executor.map(lambda proxy_url: test_proxy(proxy_url), proxy_urls))
 
     # Filter out None values
@@ -63,16 +63,19 @@ def setup_proxies():
 
 
 def test_whoscored(proxy_url, timeout=60):
+    ip, port = proxy_url.split(":")
+    options = FirefoxOptions()
+    # options.set_preference("network.proxy.type", 1)
+    # options.set_preference("network.proxy.http", ip)
+    # options.set_preference("network.proxy.http_port", int(port))
+    # options.set_preference("network.proxy.ssl", ip)
+    # options.set_preference("network.proxy.ssl_port", int(port))
+    # options.set_preference("general.useragent.override", HEADERS["user-agent"])
+    proxy = f"{ip}:{port}"
+    options.add_argument(f"user-agent={HEADERS['user-agent']}")
+    options.add_argument('--proxy-server="http={};https={}"'.format(proxy, proxy))
+    driver = webdriver.Firefox(options=options)
     try:
-        ip, port = proxy_url.split(":")
-        options = FirefoxOptions()
-        options.set_preference("network.proxy.type", 1)
-        options.set_preference("network.proxy.http", ip)
-        options.set_preference("network.proxy.http_port", int(port))
-        options.set_preference("network.proxy.ssl", ip)
-        options.set_preference("network.proxy.ssl_port", int(port))
-        options.set_preference("general.useragent.override", HEADERS["user-agent"])
-        driver = webdriver.Firefox(options=options)
         driver.set_page_load_timeout(timeout)
         driver.get("https://www.whoscored.com")
         print("TESTING", proxy_url, driver.title)
@@ -86,15 +89,20 @@ def test_whoscored(proxy_url, timeout=60):
             return None
     except Exception as e:
         # print(f"An error occurred: {e}")
+        driver.close()
+        driver.quit()
         return None
 
 
 def get_my_ip(proxies=None, verbose: bool = True):
     try:
+        # HTTP
         response = requests.get("https://httpbin.org/ip", proxies=proxies, timeout=5)
         response.raise_for_status()  # Raise an exception for HTTP errors
         ip_info = response.json()
         first = ip_info["origin"]
+
+        # HTTPS
         # response = requests.get("https://deviceandbrowserinfo.com/info_device", proxies=proxies, timeout=5)
         # soup = BeautifulSoup(response.text, "html.parser")
         # second = soup.find("p", {"style": "white-space:pre;"}).text
@@ -161,8 +169,9 @@ def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool =
 
 if __name__ == "__main__":
     print("Original:", get_my_ip())
-    while len(PROXIES) < 1:
-        PROXIES = setup_proxies()
+    # while len(PROXIES) < 1:
+    #     print("No valid proxies found. Retrying")
+    #     PROXIES = setup_proxies()
     for proxy in PROXIES:
         proxy_dict = {"http": proxy, "https": proxy}
         print(f"Using {proxy}, IP:", get_my_ip(proxies=proxy_dict))
