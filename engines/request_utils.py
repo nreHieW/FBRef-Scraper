@@ -4,14 +4,10 @@ import concurrent.futures
 import pandas as pd
 import random
 from bs4 import BeautifulSoup
-import re
-from selenium.webdriver.chrome.options import Options as ChromeOptions
+import os
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium import webdriver
 import time
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
 
 ip_pattern = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"
 
@@ -19,6 +15,11 @@ HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 
 def setup_proxies():
+    if os.path.exists("proxies.txt"):
+        with open("proxies.txt", "r") as file:
+            proxies = file.readlines()
+            proxies = [proxy.strip() for proxy in proxies]
+            return proxies
     response = requests.get("https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"})
 
     proxies = []
@@ -163,3 +164,7 @@ if __name__ == "__main__":
     for proxy in PROXIES:
         proxy_dict = {"http": proxy, "https": proxy}
         print(f"Using {proxy}, IP:", get_my_ip(proxies=proxy_dict))
+
+    with open("proxies.txt", "w") as file:
+        for proxy in PROXIES:
+            file.write(proxy + "\n")

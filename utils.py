@@ -119,11 +119,8 @@ def print_system_usage():
     disk_used = disk.used / (1024**3)  # Convert bytes to GB
     disk_free = disk.free / (1024**3)  # Convert bytes to GB
 
-    # Print the results
-    print(f"RAM Total: {ram_total:.2f} GB")
-    print(f"RAM Used: {ram_used:.2f} GB")
-    print(f"RAM Free: {ram_free:.2f} GB")
-
-    print(f"Disk Total: {disk_total:.2f} GB")
-    print(f"Disk Used: {disk_used:.2f} GB")
-    print(f"Disk Free: {disk_free:.2f} GB")
+    # Print the results in green
+    # print(f"RAM: {ram_used:.2f}GB/{ram_total:.2f}GB, Free: {ram_free:.2f}GB")
+    # print(f"Disk: {disk_used:.2f}GB/{disk_total:.2f}GB, Free: {disk_free:.2f}GB")
+    print(f"\033[92mRAM: {ram_used:.2f}GB/{ram_total:.2f}GB, Free: {ram_free:.2f}GB\033[0m")
+    print(f"\033[92mDisk: {disk_used:.2f}GB/{disk_total:.2f}GB, Free: {disk_free:.2f}GB\033[0m")

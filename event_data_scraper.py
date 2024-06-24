@@ -295,9 +295,12 @@ if __name__ == "__main__":
         cached_urls = f.read().split()
     print("Before Scraping")
     print_system_usage()
+    scraper = WhoScored()
+    print("After initializing scraper")
+    print_system_usage()
+
     for league in LEAGUES:
         for year in YEARS:
-            scraper = WhoScored()
             league_name = league.replace(" ", "_")
             filename = f"data/{league_name}_{year}_match_data.json"
             if not os.path.exists(filename):
@@ -309,7 +312,7 @@ if __name__ == "__main__":
                     json.dump(match_data, f)
                 # print(f"Found a total of {len(links)} new matches for", league, year)
             _ = scraper.scrape_matches(year, league, filename)
-            scraper.close()
+    scraper.close()
 
     # PARSING
     if os.path.exists("data/lookup/Qualifiers.json"):

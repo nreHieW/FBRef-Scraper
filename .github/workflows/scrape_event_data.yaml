@@ -51,10 +51,8 @@ jobs:
           which firefox
           firefox --version
 
-      # - name: Test Proxies
-      #   run: python engines/request_utils.py
-      # - name : test
-      #   run: python test.py
+      - name: Configure Proxies
+        run: python engines/request_utils.py
 
       - name: Running the Python script
         env: 
