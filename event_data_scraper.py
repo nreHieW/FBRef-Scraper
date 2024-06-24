@@ -293,6 +293,8 @@ if __name__ == "__main__":
 
     with open(LINKS_CACHE_FPATH, "r") as f:
         cached_urls = f.read().split()
+    print("Before Scraping")
+    print_system_usage()
     for league in LEAGUES:
         for year in YEARS:
             scraper = WhoScored()
