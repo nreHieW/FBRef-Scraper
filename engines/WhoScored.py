@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 from bs4 import BeautifulSoup
 
-# from .request_utils import get_proxy, HEADERS, get_request
+from .request_utils import get_proxy, HEADERS, get_request
 import json
 import os
 from tqdm import tqdm
@@ -22,8 +22,8 @@ class WhoScored:
     def __init__(self):
         # # whoscored scraper CANNOT be headless
         # options.add_argument("window-size=700,600")
-        # proxy = get_proxy()  # Use proxy
-        proxy = {"http": "185.222.115.104:31280", "https": "185.222.115.104:31280"}
+        proxy = get_proxy()  # Use proxy
+        # proxy = {"http": "185.222.115.104:31280", "https": "185.222.115.104:31280"}
         # proxy = {"http": "104.194.152.35:34567", "https": "104.194.152.35:34567"}
         print("Using proxy: {}".format(proxy))
         proxy = proxy["https"]
