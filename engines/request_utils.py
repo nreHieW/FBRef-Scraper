@@ -5,10 +5,12 @@ import pandas as pd
 import random
 from bs4 import BeautifulSoup
 import os
+import re
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium import webdriver
 import time
-import json
+import random
+from tqdm import tqdm
 
 ip_pattern = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"
 
@@ -50,13 +52,15 @@ def setup_proxies():
     response = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
     proxy_urls += response.text.split("\n")
 
-    r = requests.get("https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/json/proxies.json")
-    proxy_urls += json.loads(r.text)["https"]
+    response = requests.get("https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt")
+    tmp = response.text.split("\n")
+    proxy_urls += random.sample(tmp, 2000)
+
     proxy_urls = list(set(proxy_urls))
 
     print(f"Found {len(proxy_urls)} proxies")
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
-        valid_proxies = list(executor.map(lambda proxy_url: test_proxy(proxy_url), proxy_urls))
+        valid_proxies = list(tqdm(executor.map(test_proxy, proxy_urls), total=len(proxy_urls)))
 
     # Filter out None values
     valid_proxies = [proxy for proxy in valid_proxies if proxy]
@@ -105,18 +109,19 @@ def test_whoscored(proxy_url, timeout=60):
 def get_my_ip(proxies=None, verbose: bool = True):
     try:
         # HTTP
-        response = requests.get("https://httpbin.org/ip", proxies=proxies, timeout=5)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        ip_info = response.json()
-        first = ip_info["origin"]
+        # response = requests.get("https://httpbin.org/ip", proxies=proxies, timeout=5)
+        # response.raise_for_status()  # Raise an exception for HTTP errors
+        # ip_info = response.json()
+        # first = ip_info["origin"]
 
         # HTTPS
-        # response = requests.get("https://deviceandbrowserinfo.com/info_device", proxies=proxies, timeout=5)
-        # soup = BeautifulSoup(response.text, "html.parser")
-        # second = soup.find("p", {"style": "white-space:pre;"}).text
-        # second = re.findall(ip_pattern, second)[0]
+        response = requests.get("https://deviceandbrowserinfo.com/info_device", proxies=proxies, timeout=5)
+        soup = BeautifulSoup(response.text, "html.parser")
+        second = soup.find("p", {"style": "white-space:pre;"}).text
+        second = re.findall(ip_pattern, second)[0]
         # if first == second:
-        return first
+        # return first
+        return second
     except requests.exceptions.RequestException as e:
         if verbose:
             print(f"An error occurred: {e}")
