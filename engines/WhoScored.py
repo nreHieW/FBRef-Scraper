@@ -1,10 +1,9 @@
 from selenium import webdriver
 import selenium.common.exceptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.remote.webelement import WebElement
 import time
 from bs4 import BeautifulSoup
 
@@ -13,6 +12,7 @@ from utils import get_system_usage
 import json
 import os
 from tqdm import tqdm
+import re
 
 
 HEADERS = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
@@ -40,18 +40,12 @@ class WhoScored:
         options.set_preference("permissions.default.image", 2)
         options.page_load_strategy = "eager"
         options.set_preference("dom.ipc.plugins.enabled.libflashplayer.so", "false")
-        options.add_argument("start-maximized")
-        options.add_argument("disable-infobars")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-application-cache")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
         try:
             self.driver = webdriver.Firefox(options=options)
         except Exception as e:
             print("Error starting webdriver. Trying again.")
             proxy = get_proxy()  # Use proxy
+            # proxy = {"http": "185.222.115.104:31280", "https": "185.222.115.104:31280"}
             proxy = proxy["https"]
             ip, port = proxy.split(":")
             options.set_preference("network.proxy.type", 1)
@@ -77,11 +71,10 @@ class WhoScored:
             system_usage = get_system_usage()
             ram_amt_free = system_usage["ram"]["free"]  # in GB
             if ram_amt_free < 0.75:
-                print(f"RAM usage is {ram_amt_free}. Restarting webdriver.")
+                print(f"RAM free is {ram_amt_free}. Restarting webdriver.")
                 self.close()
                 self.__init__()
         except selenium.common.exceptions.TimeoutException:
-            # reinit self
             print("Timeout exception. Reinitializing webdriver.")
             self.close()
             self.__init__()
@@ -89,8 +82,24 @@ class WhoScored:
     def click_cookie_button(self):
         cookies_button = self.driver.find_elements(By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/button[2]")
         if cookies_button:
-            cookies_button[0].click()
-            # print("Clicked cookies button")
+            self.click_button(cookies_button[0])
+
+    def click_button(self, button_item: WebElement):
+        try:
+            button_item.click()
+        except selenium.common.exceptions.ElementClickInterceptedException as e:
+            print("ElementClickInterceptedException. Trying to click again.")
+            re_match = re.search(r'obscures it.?<.+?id="([^"]+)"', str(e))
+            if re_match:
+                obstructing_element_id = re_match.group(1)
+                obstructing_element = self.driver.find_element(By.ID, obstructing_element_id)
+                self.driver.execute_script("arguments[0].style.visibility='hidden';", obstructing_element)
+                button_item.click()
+            else:
+                self.driver.refresh()
+                time.sleep(3)
+                self.click_cookie_button()
+                button_item.click()
 
     ############################################################################
     def get_season_link(self, year, league):
@@ -211,8 +220,8 @@ class WhoScored:
                 # print(len(links), "matches found")
                 prev_week_button = self.driver.find_element(By.ID, "dayChangeBtn-prev")
                 self.click_cookie_button()  # This is to prevent some weird overlay thing from blocking the button
-                prev_week_button.click()
-                time.sleep(1)
+                self.click_button(prev_week_button)
+                time.sleep(3)
                 if initial == self.driver.page_source:  # if the page didn't change, then we've reached the end
                     break
         # print(list(set(links)))
