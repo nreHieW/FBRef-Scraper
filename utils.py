@@ -11,21 +11,24 @@ def write_to_bq(df: pd.DataFrame, name: str, dataset_name: str, write_type="APPE
     client = bigquery.Client(project=project_id)
     dataset = client.dataset(dataset_name)
     table = dataset.table(name)
-    write_type = bigquery.WriteDisposition.WRITE_TRUNCATE
-
     if write_type == "APPEND":
+        write_type = bigquery.WriteDisposition.WRITE_APPEND
         existing_df = client.query(f"SELECT * FROM {project_id}.{dataset.dataset_id}.{table.table_id}").to_dataframe()
 
         if sorted(existing_df.columns.tolist()) != sorted(df.columns.tolist()):
-            print("Columns do not match")
+            print("[ERROR] Columns do not match. Cannot append data")
             return
         df = pd.concat([existing_df, df]).reset_index(drop=True).drop_duplicates()
         if len(df) == len(existing_df):
-            print("No new data to upload")
+            print("No new data to append")
             return
         elif df.shape[1] != existing_df.shape[1]:
-            print("Columns do not match after concatenation")
+            print("[ERROR] Columns do not match. Cannot append data")
             return
+    elif write_type == "WRITE_TRUNCATE":
+        write_type = bigquery.WriteDisposition.WRITE_TRUNCATE
+    else:
+        raise ValueError("Invalid write type. Supported types are APPEND or WRITE_TRUNCATE")
 
     job_config = bigquery.LoadJobConfig(write_disposition=write_type)
     try:

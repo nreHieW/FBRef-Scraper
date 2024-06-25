@@ -308,7 +308,9 @@ if __name__ == "__main__":
             filename = f"data/{league_name}_{year}_match_data.json"
             if not os.path.exists(filename):
                 links = scraper.get_match_links(year, league)
+                print(f"Found a total of {len(links)} matches for", league, year)
                 links = [x for x in links if x not in cached_urls]
+                print(f"Found a total of {len(links)} new matches for", league, year, "after filtering")
                 match_data = dict(zip(links, [""] * len(links)))
 
                 with open(filename, "w") as f:
@@ -403,7 +405,7 @@ if __name__ == "__main__":
             write_to_bq(events, table_name, "Event_Data", write_type="APPEND")  # append
 
             # write the matches table
-            write_to_bq(all_matches, "Matches", "Lookup_Tables", write_type="APPEND", fix_type=False)
+            write_to_bq(all_matches, "Matches", "Lookup_Tables", write_type="APPEND")
             # write scraped to text
             with open(LINKS_CACHE_FPATH, "a") as f:
                 for item in match_urls:

@@ -61,7 +61,7 @@ def setup_proxies():
     print(f"Found {len(proxy_urls)} proxies, using 10000 sample to test")
     proxy_urls = random.sample(proxy_urls, 10000)
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
-        valid_proxies = list(tqdm(executor.map(test_proxy, proxy_urls), total=len(proxy_urls)))
+        valid_proxies = list(tqdm(executor.map(test_proxy, proxy_urls), total=len(proxy_urls), leave=False))
 
     # Filter out None values
     valid_proxies = [proxy for proxy in valid_proxies if proxy]
