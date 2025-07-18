@@ -23,7 +23,9 @@ def setup_proxies():
             proxies = file.readlines()
             proxies = [proxy.strip() for proxy in proxies]
             return proxies
-    response = requests.get("https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"})
+    response = requests.get(
+        "https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
+    )
 
     proxies = []
     soup = BeautifulSoup(response.text, "html.parser")
@@ -47,7 +49,11 @@ def setup_proxies():
     proxy_urls = [
         f"{proxy['ip']}:{proxy['port']}"
         for proxy in proxies
-        if proxy["ip"] and proxy["port"] and "-" not in f"{proxy['ip']}:{proxy['port']}" and len(f"{proxy['ip']}:{proxy['port']}".split(":")) == 2 and len(f"{proxy['ip']}:{proxy['port']}".split(".")) == 4
+        if proxy["ip"]
+        and proxy["port"]
+        and "-" not in f"{proxy['ip']}:{proxy['port']}"
+        and len(f"{proxy['ip']}:{proxy['port']}".split(":")) == 2
+        and len(f"{proxy['ip']}:{proxy['port']}".split(".")) == 4
     ]
     response = requests.get("https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt")
     proxy_urls += response.text.split("\n")
@@ -68,9 +74,9 @@ def setup_proxies():
     print(f"Testing {len(valid_proxies)} proxies")
     valid_proxies = [proxy for proxy in valid_proxies if test_whoscored(proxy, timeout=20)]
     valid_proxies = list(set(valid_proxies))
-    if len(valid_proxies) < 1:
-        print("No valid proxies found. Retrying")
-        return setup_proxies()
+    # if len(valid_proxies) < 1:
+    #     print("No valid proxies found. Retrying")
+    #     return setup_proxies()
     return valid_proxies
 
 
@@ -97,7 +103,7 @@ def test_whoscored(proxy_url, timeout=60):
             driver.quit()
             return None
     except Exception as e:
-        # print(f"An error occurred: {e}")
+        print(f"An error occurred: {e}")
         driver.close()
         driver.quit()
         return None
