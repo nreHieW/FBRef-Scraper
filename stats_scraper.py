@@ -6,8 +6,44 @@ from utils import *
 from engines.request_utils import get_request
 import os
 import concurrent.futures
+import functools
+from selenium.common.exceptions import TimeoutException, WebDriverException, NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException, ElementNotInteractableException
 
 OVERALL_TIMEOUT = 100
+
+
+# Retry decorator for WebDriver exceptions
+def retry_on_webdriver_exception(max_retries=3, delay=5):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except (TimeoutException, WebDriverException, NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException, ElementNotInteractableException) as e:
+                    print(f"WebDriver exception in {func.__name__} (attempt {attempt + 1}/{max_retries}): {e}")
+                    if attempt < max_retries - 1:
+                        print(f"Retrying in {delay} seconds...")
+                        time.sleep(delay)
+                        # If we have a scraper object, reinitialize it
+                        if args and hasattr(args[0], "close") and hasattr(args[0], "__init__"):
+                            try:
+                                args[0].close()
+                                args[0].__init__()
+                                print("Reinitialized scraper after WebDriver exception")
+                            except Exception as init_e:
+                                print(f"Failed to reinitialize scraper: {init_e}")
+                    else:
+                        print(f"Max retries reached for {func.__name__}")
+                        raise
+                except Exception as e:
+                    print(f"Non-WebDriver exception in {func.__name__}: {e}")
+                    raise
+            return None
+
+        return wrapper
+
+    return decorator
 
 
 def scrape_year(year: int, leagues: list, scraper: FBRef):
@@ -108,7 +144,12 @@ def parse_results(results: dict):
         merged_df[f"Padj_{metric.replace('Defense', 'Defensive')}"] = merged_df.apply(lambda row: possession_adjust(row, metric), axis=1)
 
     print(merged_df.columns.tolist())
-    padj_df = merged_df[["Summary_Player", "Summary_Player_ID"] + [f"Padj_{x}" for x in [y.replace("Defense", "Defensive") for y in to_adjust_metrics]]].groupby(["Summary_Player", "Summary_Player_ID"]).sum().reset_index()
+    padj_df = (
+        merged_df[["Summary_Player", "Summary_Player_ID"] + [f"Padj_{x}" for x in [y.replace("Defense", "Defensive") for y in to_adjust_metrics]]]
+        .groupby(["Summary_Player", "Summary_Player_ID"])
+        .sum()
+        .reset_index()
+    )
     player_df = players.merge(padj_df, left_on=["Standard_Player", "Standard_Player_ID"], right_on=["Summary_Player", "Summary_Player_ID"], how="left")
 
     to_normalize = [x for x in player_df.columns if ("90" not in x) and ("pct" not in x.lower()) and ("playing_time" not in x.lower())]
@@ -148,7 +189,15 @@ def scrape_league(year: int, league: str, scraper: FBRef):
     # data is a dictionary with keys as category names, values are typles of 3 dataframes
     # (squad, opponent, player_stats)
 
-    data = scraper.scrape_all_stats(year, league)
+    @retry_on_webdriver_exception()
+    def scrape_all_stats_with_retry(scraper, year, league):
+        return scraper.scrape_all_stats(year, league)
+
+    @retry_on_webdriver_exception()
+    def scrape_matches_with_retry(scraper, year, league):
+        return scraper.scrape_matches(year, league)
+
+    data = scrape_all_stats_with_retry(scraper, year, league)
     squad, squad_gks = parse_stats(data, 0)
     squad["League"] = league
     squad_gks["League"] = league
@@ -159,16 +208,29 @@ def scrape_league(year: int, league: str, scraper: FBRef):
     player_stats["League"] = league
     player_gk["League"] = league
 
-    matches = scraper.scrape_matches(year, league).dropna()
+    matches = scrape_matches_with_retry(scraper, year, league).dropna()
     print(f"Found {len(matches)} completed matches", end="\r", flush=True)
     shots = []
-    for _, row in matches.iterrows():
+    player_logs = pd.DataFrame()
+
+    @retry_on_webdriver_exception(max_retries=2, delay=3)  # Shorter retry for individual matches
+    def process_match_data(row):
         home_players = parse_match_stats(row["Home Player Stats"], row.to_frame())
         away_players = parse_match_stats(row["Away Player Stats"], row.to_frame())
-        player_logs = pd.concat([player_logs, home_players, away_players], ignore_index=True)
+        combined_players = pd.concat([home_players, away_players], ignore_index=True)
         indiv_shots = parse_shots(row["Shots"].loc["Both"], row.to_frame())
-        shots.append(indiv_shots)
-    shots = pd.concat(shots, ignore_index=True)
+        return combined_players, indiv_shots
+
+    for _, row in matches.iterrows():
+        try:
+            combined_players, indiv_shots = process_match_data(row)
+            player_logs = pd.concat([player_logs, combined_players], ignore_index=True)
+            shots.append(indiv_shots)
+        except Exception as e:
+            print(f"Failed to process match data: {e}")
+            continue
+
+    shots = pd.concat(shots, ignore_index=True) if shots else pd.DataFrame()
     return {"squad": squad, "squad_gks": squad_gks, "against": against, "against_gks": against_gks, "player_stats": player_stats, "player_gk": player_gk, "player_logs": player_logs, "shots": shots}
 
 
@@ -255,10 +317,18 @@ def get_match_level(teams, season):  # get individual match level data
         df.insert(11, "penagainst", penagainst)
         return df
 
+    @retry_on_webdriver_exception(max_retries=2, delay=3)
+    def get_match_logs_with_retry(team_id, season, team):
+        return get_match_logs(team_id, season, team)
+
     dfs = []
     for team in teams:
-        tmp = get_match_logs(teams.get(team), season, team)
-        dfs.append(tmp)
+        try:
+            tmp = get_match_logs_with_retry(teams.get(team), season, team)
+            dfs.append(tmp)
+        except Exception as e:
+            print(f"Failed to get match logs for team {team}: {e}")
+            continue
 
     df = pd.concat(dfs, ignore_index=True)
     df = df.dropna(thresh=35).fillna(0)
@@ -302,7 +372,17 @@ def get_match_logs(id, year, team):
 def parse_columns(df: pd.DataFrame):
     oldcols = df.columns.tolist()
     new = [
-        x.replace("#", "_No_").replace(" ", "_").replace("(", "").replace("-", "_").replace(")", "").replace("%", "_Pct_").replace("1/3", "One_Third").replace("/", "_per").replace("+", "_Plus_").replace(":", "_").replace("__", "_")
+        x.replace("#", "_No_")
+        .replace(" ", "_")
+        .replace("(", "")
+        .replace("-", "_")
+        .replace(")", "")
+        .replace("%", "_Pct_")
+        .replace("1/3", "One_Third")
+        .replace("/", "_per")
+        .replace("+", "_Plus_")
+        .replace(":", "_")
+        .replace("__", "_")
         for x in oldcols
     ]
     new = [x.strip("_") for x in new]

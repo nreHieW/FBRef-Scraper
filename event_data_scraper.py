@@ -1,4 +1,41 @@
 from utils import write_to_bq, check_size, is_ubuntu, get_system_usage
+import time
+import functools
+from selenium.common.exceptions import TimeoutException, WebDriverException, NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException, ElementNotInteractableException
+
+
+# Retry decorator for WebDriver exceptions
+def retry_on_webdriver_exception(max_retries=3, delay=5):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except (TimeoutException, WebDriverException, NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException, ElementNotInteractableException) as e:
+                    print(f"WebDriver exception in {func.__name__} (attempt {attempt + 1}/{max_retries}): {e}")
+                    if attempt < max_retries - 1:
+                        print(f"Retrying in {delay} seconds...")
+                        time.sleep(delay)
+                        # If we have a scraper object, reinitialize it
+                        if args and hasattr(args[0], "close") and hasattr(args[0], "__init__"):
+                            try:
+                                args[0].close()
+                                args[0].__init__()
+                                print("Reinitialized scraper after WebDriver exception")
+                            except Exception as init_e:
+                                print(f"Failed to reinitialize scraper: {init_e}")
+                    else:
+                        print(f"Max retries reached for {func.__name__}")
+                        raise
+                except Exception as e:
+                    print(f"Non-WebDriver exception in {func.__name__}: {e}")
+                    raise
+            return None
+
+        return wrapper
+
+    return decorator
 
 
 if is_ubuntu():  # github actions
@@ -42,7 +79,9 @@ def season_mappings(data, match_urls):  # return mappings of  PLAYER_NAMES and T
         match = data.get(url)
         match_centre = match.get("matchCentreData")
         player_names = pd.DataFrame.from_dict(match_centre.get("playerIdNameDictionary"), orient="index")
-        team_ids = pd.DataFrame.from_dict({match_centre["home"].get("teamId"): str(match_centre["home"].get("name")), match_centre["away"].get("teamId"): str(match_centre["away"].get("name"))}, orient="index")
+        team_ids = pd.DataFrame.from_dict(
+            {match_centre["home"].get("teamId"): str(match_centre["home"].get("name")), match_centre["away"].get("teamId"): str(match_centre["away"].get("name"))}, orient="index"
+        )
 
         PLAYER_NAMES = pd.concat([PLAYER_NAMES, player_names])
         TEAM_IDS = pd.concat([TEAM_IDS, team_ids])
@@ -282,6 +321,13 @@ def get_match_info(match, REF_DICT, STADIUMS):  # pass in a single match ,REF DI
     return match_info, REF_DICT, STADIUMS
 
 
+@retry_on_webdriver_exception()
+def main_scraping_loop(scraper, year, league, filename):
+    print(f"Scraping {league} {year}")
+    _ = scraper.scrape_matches(year, league, filename)
+    print(f"Finished scraping {league} {year}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scrape WhoScored Data")
     parser.add_argument("--start", type=int, help="Start year", default=2024)
@@ -307,7 +353,12 @@ if __name__ == "__main__":
             league_name = league.replace(" ", "_")
             filename = f"data/{league_name}_{year}_match_data.json"
             if not os.path.exists(filename):
-                links = scraper.get_match_links(year, league)
+
+                @retry_on_webdriver_exception()
+                def get_links_with_retry(scraper, year, league):
+                    return scraper.get_match_links(year, league)
+
+                links = get_links_with_retry(scraper, year, league)
                 print(f"Found a total of {len(links)} matches for", league, year)
                 links = [x for x in links if x not in cached_urls]
                 print(f"Found a total of {len(links)} new matches for", league, year, "after filtering")
@@ -316,7 +367,7 @@ if __name__ == "__main__":
                 with open(filename, "w") as f:
                     json.dump(match_data, f)
                 # print(f"Found a total of {len(links)} new matches for", league, year)
-            _ = scraper.scrape_matches(year, league, filename)
+            main_scraping_loop(scraper, year, league, filename)
             usage = get_system_usage()
             print(f"\033[92mRAM: {usage['ram']['used']:.2f}GB/{usage['ram']['total']:.2f}GB, Free: {usage['ram']['free']:.2f}GB\033[0m")
             print(f"\033[92mDisk: {usage['disk']['used']:.2f}GB/{usage['disk']['total']:.2f}GB, Free: {usage['disk']['free']:.2f}GB\033[0m")
@@ -388,7 +439,9 @@ if __name__ == "__main__":
 
             # lines below needed as of 14/4
             events[[x for x in events.columns if "Is" in x]] = events[[x for x in events.columns if "Is" in x]].fillna("False").replace({"False": False, "True": True})
-            events[["Length", "PassEndX", "PassEndY", "BlockedX", "GoalMouthZ", "BlockedY", "GoalMouthY", "Angle"]] = events[["Length", "PassEndX", "PassEndY", "BlockedX", "GoalMouthZ", "BlockedY", "GoalMouthY", "Angle"]].astype("float64")
+            events[["Length", "PassEndX", "PassEndY", "BlockedX", "GoalMouthZ", "BlockedY", "GoalMouthY", "Angle"]] = events[
+                ["Length", "PassEndX", "PassEndY", "BlockedX", "GoalMouthZ", "BlockedY", "GoalMouthY", "Angle"]
+            ].astype("float64")
             events.drop("Foul", axis=1, inplace=True, errors="ignore")
             try:
                 events["ShotAssist"] = events["ShotAssist"].astype("Int64", errors="ignore")
