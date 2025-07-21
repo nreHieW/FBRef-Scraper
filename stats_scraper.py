@@ -287,7 +287,8 @@ def scrape_year(year: int, league: str) -> StatsScraperResult:
     match_logs = []
     for team_id in team_ids:
         match_logs.append(get_match_logs(team_id, year, team_ids[team_id], fb))
-    squad_logs = pd.concat(match_logs, ignore_index=True)
+    match_logs_clean = [df.reset_index(drop=True) for df in match_logs]
+    squad_logs = pd.concat(match_logs_clean, ignore_index=True)
 
     raw_results: StatsScraperResult = {"squad_logs": squad_logs, **league_results}
     processed_results = process_results(raw_results)
