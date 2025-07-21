@@ -1,4 +1,4 @@
-name: scrape_big5_fbref
+name: scrape_fbref
 on:
   workflow_dispatch:
 jobs:
@@ -11,15 +11,17 @@ jobs:
       - name: Check out this repo
         uses: actions/checkout@v3
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
       - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+        run: uv python install
+
       - name: setup-chromedriver
         uses: nanasess/setup-chromedriver@v2.2.1    
 
-      - name: Install all necessary packages
-        run: pip install -r requirements.txt
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
@@ -33,7 +35,7 @@ jobs:
       - name: Run the scraping script (first 5 leagues)
         env: 
           GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
-        run: python stats_scraper.py --leagues "EPL" "La Liga" "Serie A" "Ligue 1" "Bundesliga" --write_type "WRITE_TRUNCATE"
+        run: uv run stats_scraper.py --write_type "WRITE_TRUNCATE" --start 2022 --end 2025
       
       - name: Commit and Push The Results
         run: |

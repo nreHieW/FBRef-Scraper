@@ -4,6 +4,22 @@ import pandas as pd
 from google.cloud import bigquery
 import difflib
 import psutil
+from enum import Enum
+
+
+class WriteType(Enum):
+    APPEND = "APPEND"
+    WRITE_TRUNCATE = "WRITE_TRUNCATE"
+
+
+class League(Enum):
+    EPL = "EPL"
+    La_Liga = "La Liga"
+    Serie_A = "Serie A"
+    Ligue_1 = "Ligue 1"
+    Bundesliga = "Bundesliga"
+    Eredivisie = "Eredivisie"
+    Primeira_Liga = "Primeira Liga"
 
 
 def write_to_bq(df: pd.DataFrame, name: str, dataset_name: str, write_type="APPEND"):  # writes to bigquery, types supported are APPEND or WRITE_TRUNCATE

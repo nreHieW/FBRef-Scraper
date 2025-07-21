@@ -11,6 +11,7 @@ from selenium import webdriver
 import time
 import random
 from tqdm import tqdm
+from io import StringIO
 
 ip_pattern = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"
 
@@ -23,9 +24,7 @@ def setup_proxies():
             proxies = file.readlines()
             proxies = [proxy.strip() for proxy in proxies]
             return proxies
-    response = requests.get(
-        "https://www.sslproxies.org/", headers={"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36"}
-    )
+    response = requests.get("https://www.sslproxies.org/", headers=HEADERS)
 
     proxies = []
     soup = BeautifulSoup(response.text, "html.parser")
@@ -34,18 +33,8 @@ def setup_proxies():
         if len(tds) == 0:
             continue
         proxies.append({"ip": tds[0].string, "port": tds[1].string})
+    proxies = [x for x in proxies if x["ip"] and x["port"] and []]
 
-    proxies = [x for x in proxies if "-" not in x]  # remove date
-    response = requests.get("https://free-proxy-list.net/", headers=HEADERS)
-
-    df = pd.read_html(response.text)[0]
-    for _, row in df.iterrows():
-        proxies.append(
-            {
-                "ip": row["IP Address"],
-                "port": row["Port"],
-            }
-        )
     proxy_urls = [
         f"{proxy['ip']}:{proxy['port']}"
         for proxy in proxies
@@ -65,7 +54,8 @@ def setup_proxies():
     proxy_urls = list(set(proxy_urls))
 
     print(f"Found {len(proxy_urls)} proxies, using 10000 sample to test")
-    proxy_urls = random.sample(proxy_urls, 10000)
+    # proxy_urls = random.sample(proxy_urls, 10000)
+    proxy_urls = random.sample(proxy_urls, 2)
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
         valid_proxies = list(tqdm(executor.map(test_proxy, proxy_urls), total=len(proxy_urls), leave=False))
 
@@ -77,6 +67,7 @@ def setup_proxies():
     # if len(valid_proxies) < 1:
     #     print("No valid proxies found. Retrying")
     #     return setup_proxies()
+    exit()
     return valid_proxies
 
 
@@ -115,6 +106,7 @@ def get_my_ip(proxies=None, verbose: bool = True):
         response = requests.get("https://httpbin.org/ip", proxies=proxies, timeout=5)
         response.raise_for_status()  # Raise an exception for HTTP errors
         ip_info = response.json()
+        print("response.json()", response.json())
         first = ip_info.get("origin")
 
         # HTTPS
@@ -135,7 +127,8 @@ def test_proxy(proxy_url):
     proxy_dict = {"http": proxy_url, "https": proxy_url}
     c = 0
     for _ in range(10):
-        ip = get_my_ip(proxies=proxy_dict, verbose=False)
+        ip = get_my_ip(proxies=proxy_dict, verbose=True)
+        print(ip, proxy_url)
         if ip and ip.startswith(proxy_url.split(":")[0]):
             c += 1
         else:
@@ -145,13 +138,17 @@ def test_proxy(proxy_url):
     return None
 
 
-PROXIES = setup_proxies()
-print(f"Found {len(PROXIES)} valid proxies")
+# PROXIES = setup_proxies()
+# print(f"Found {len(PROXIES)} valid proxies")
 
 
 def get_proxy():
-    idx = random.randint(0, len(PROXIES) - 1)
+    # idx = random.randint(0, len(PROXIES) - 1)
+    return None
     return {"http": PROXIES[idx], "https": PROXIES[idx]}
+
+
+PROXIES = []
 
 
 def get_request(url: str, timeout: int = 5, max_iter: int = 100, verbose: bool = True, proxy=None) -> requests.Response:
