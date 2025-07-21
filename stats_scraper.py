@@ -267,6 +267,7 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     df = df.T.drop_duplicates().T
     df.insert(1, "Squad", team)
     df = df.replace("Champions Lg", "Champions League").replace("Europa Lg", "Europa League")
+    df = df.rename(columns={"Gf": "GF", "Ga": "GA"})
 
     # Penalties are in the GF/GA columns of the form FT (PEN)
     penfor = df["GF"].apply(lambda x: str(x).split()[-1].replace("(", "").replace(")", "") if (len(str(x).split()) > 1) else 0)
