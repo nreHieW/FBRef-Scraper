@@ -240,7 +240,7 @@ def scrape_league(year: int, league: str, fb: FBRefWrapper) -> ScrapeLeagueResul
 
 def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.DataFrame:
     prefixes = ["schedule", "shooting", "keeper", "passing", "passing_types", "gca", "defense", "possession", "misc"]
-    starting_url = f"https://fbref.com/en/squads/{team_id}/{year-1}-{year}/matchlogs/all_comps/"
+    starting_url = f"https://fbref.com/en/squads/{team_id}/{year}/matchlogs/all_comps/"
 
     dfs = []
     for prefix in prefixes:
@@ -278,7 +278,7 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     return df.apply(pd.to_numeric, errors="ignore").drop_duplicates()
 
 
-def scrape_year(year, league) -> StatsScraperResult:
+def scrape_year(year: int, league: str) -> StatsScraperResult:
     # with FBRefWrapper() as fb:
     fb = FBRefWrapper()
     league_results = scrape_league(year, league, fb)
