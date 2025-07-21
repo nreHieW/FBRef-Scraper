@@ -279,18 +279,18 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
 
 
 def scrape_year(year, league) -> StatsScraperResult:
-    fb = FBRefWrapper()
-    league_results = scrape_league(year, league, fb)
-    team_ids = dict(zip(league_results["matches"]["Home Team ID"].tolist(), league_results["matches"]["Home Team"].tolist()))
-    match_logs = []
-    for team_id in team_ids:
-        match_logs.append(get_match_logs(team_id, year, team_ids[team_id], fb))
-    squad_logs = pd.concat(match_logs, ignore_index=True)
+    with FBRefWrapper() as fb:
+        league_results = scrape_league(year, league, fb)
+        team_ids = dict(zip(league_results["matches"]["Home Team ID"].tolist(), league_results["matches"]["Home Team"].tolist()))
+        match_logs = []
+        for team_id in team_ids:
+            match_logs.append(get_match_logs(team_id, year, team_ids[team_id], fb))
+        squad_logs = pd.concat(match_logs, ignore_index=True)
 
-    raw_results: StatsScraperResult = {"squad_logs": squad_logs, **league_results}
-    processed_results = process_results(raw_results)
-    fb.quit()
-    return processed_results
+        raw_results: StatsScraperResult = {"squad_logs": squad_logs, **league_results}
+        processed_results = process_results(raw_results)
+        # fb.quit() is automatically called by the context manager
+        return processed_results
 
 
 def process_league_year(year_string: str, league: str, table_mapping: dict, write_type: WriteType) -> None:
@@ -340,7 +340,6 @@ if __name__ == "__main__":
         default=["EPL", "La Liga", "Serie A", "Ligue 1", "Bundesliga", "EFL Championship"],
     )
     parser.add_argument("--write_type", type=WriteType, help="Write Type", default=WriteType.WRITE_TRUNCATE)
-    parser.add_argument("--max_workers", type=int, help="Maximum concurrent workers", default=3)
     args = parser.parse_args()
 
     years = range(args.start, args.end + 1)
@@ -362,14 +361,14 @@ if __name__ == "__main__":
 
     # Process each year sequentially, but leagues within each year concurrently
     for year_string in year_strings:
-
-        with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
-            # Submit all league processing tasks for this year
+        # Not too many due to FBRef rate limiting
+        with ThreadPoolExecutor(max_workers=2) as executor:
             future_to_league = {executor.submit(process_league_year, year_string, league, table_mapping, args.write_type): league for league in args.leagues}
 
             for future in as_completed(future_to_league):
                 league = future_to_league[future]
-                try:
-                    future.result()
-                except Exception as e:
-                    print(f"Error with {year_string} {league}: {e}")
+                # try:
+                #     future.result()
+                # except Exception as e:
+                #     print(f"Error with {year_string} {league}: {e}")
+                future.result()

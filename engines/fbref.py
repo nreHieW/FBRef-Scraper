@@ -12,6 +12,15 @@ class FBRefWrapper(FBref):
     def __init__(self):
         super().__init__()
 
+    def __enter__(self):
+        """Context manager entry point"""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit point - ensures cleanup even if exception occurs"""
+        self.quit()
+        return False
+
     def _driver_init(self) -> None:
         """Private, creates a headless selenium webdriver"""
         options = Options()
