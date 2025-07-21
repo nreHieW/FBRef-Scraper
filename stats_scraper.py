@@ -7,7 +7,7 @@ from io import StringIO
 import pandas as pd
 
 from engines.fbref import FBRefWrapper
-from utils.data_utils import merge_dataframes, format_column_names, find_closest_matches, find_most_similar_string, possession_adjust
+from utils.data_utils import merge_dataframes, format_column_names, find_closest_matches, find_most_similar_string
 from utils.types import ScrapeLeagueResult, StatsScraperResult
 from utils.bq_utils import WriteType, write_to_bq
 
@@ -38,6 +38,12 @@ def _find_team(row, mapping):
         return home
     else:
         return away
+
+
+def _possession_adjust(row: pd.Series, metric: str):
+    opp_possession = 100 - row["Poss"]
+    assert opp_possession >= 0, f"{row['Poss']} is not a valid possession value for metric {metric}"
+    return row[metric] / opp_possession * 50
 
 
 def process_results(results: StatsScraperResult) -> StatsScraperResult:
@@ -138,7 +144,7 @@ def process_results(results: StatsScraperResult) -> StatsScraperResult:
     to_adjust_metrics = [x for x in merged_df.columns if ("Defense" in x) or (x.startswith("Passing"))]
     to_adjust_metrics = [x for x in to_adjust_metrics if "pct" not in x.lower()]
     for metric in to_adjust_metrics:
-        merged_df[f"Padj_{metric.replace('Defense', 'Defensive')}"] = merged_df.apply(lambda row: possession_adjust(row, metric), axis=1)
+        merged_df[f"Padj_{metric.replace('Defense', 'Defensive')}"] = merged_df.apply(lambda row: _possession_adjust(row, metric), axis=1)
 
     # Aggregate possession-adjusted metrics by player across all matches
     padj_df = (
