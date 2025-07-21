@@ -279,18 +279,19 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
 
 
 def scrape_year(year, league) -> StatsScraperResult:
-    with FBRefWrapper() as fb:
-        league_results = scrape_league(year, league, fb)
-        team_ids = dict(zip(league_results["matches"]["Home Team ID"].tolist(), league_results["matches"]["Home Team"].tolist()))
-        match_logs = []
-        for team_id in team_ids:
-            match_logs.append(get_match_logs(team_id, year, team_ids[team_id], fb))
-        squad_logs = pd.concat(match_logs, ignore_index=True)
+    # with FBRefWrapper() as fb:
+    fb = FBRefWrapper()
+    league_results = scrape_league(year, league, fb)
+    team_ids = dict(zip(league_results["matches"]["Home Team ID"].tolist(), league_results["matches"]["Home Team"].tolist()))
+    match_logs = []
+    for team_id in team_ids:
+        match_logs.append(get_match_logs(team_id, year, team_ids[team_id], fb))
+    squad_logs = pd.concat(match_logs, ignore_index=True)
 
-        raw_results: StatsScraperResult = {"squad_logs": squad_logs, **league_results}
-        processed_results = process_results(raw_results)
-        # fb.quit() is automatically called by the context manager
-        return processed_results
+    raw_results: StatsScraperResult = {"squad_logs": squad_logs, **league_results}
+    processed_results = process_results(raw_results)
+    # fb.quit() is automatically called by the context manager
+    return processed_results
 
 
 def process_league_year(year_string: str, league: str, table_mapping: dict, write_type: WriteType) -> None:
@@ -301,7 +302,6 @@ def process_league_year(year_string: str, league: str, table_mapping: dict, writ
     try:
         results = scrape_year(year_string, league)
 
-        write_tasks = []
         for k, v in results.items():
             if k in table_mapping:
                 dataset_name, table_prefix = table_mapping[k]
@@ -315,12 +315,7 @@ def process_league_year(year_string: str, league: str, table_mapping: dict, writ
                     # E.g. Stats tables: Players_2024_EPL, Against_2024_EPL, etc.
                     table_name = f"{table_prefix}_{year_suffix}_{league}"
 
-                write_tasks.append((v, table_name, dataset_name, write_type))
-
-        with ThreadPoolExecutor(max_workers=4) as bq_executor:
-            bq_futures = [bq_executor.submit(write_to_bq, df, table_name, dataset_name, write_type) for df, table_name, dataset_name, write_type in write_tasks]
-            for future in bq_futures:
-                future.result()
+                write_to_bq(v, table_name, dataset_name, write_type)
 
         print(f"Completed {year_string} {league}")
 
