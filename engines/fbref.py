@@ -1,4 +1,16 @@
-from ScraperFC.fbref import FBref
+import sys
+import importlib.util
+
+# This is needed because importing sofascore causes issues with GitHub Actions See: https://github.com/nreHieW/FBRef-Scraper/actions/runs/16408123054/job/46357619338
+# Import FBref directly from the fbref module to avoid ScraperFC's __init__.py
+spec = importlib.util.find_spec("ScraperFC.fbref")
+if spec is None:
+    raise ImportError("Could not find ScraperFC.fbref module")
+fbref_module = importlib.util.module_from_spec(spec)
+sys.modules["ScraperFC.fbref"] = fbref_module
+spec.loader.exec_module(fbref_module)
+FBref = fbref_module.FBref
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager

@@ -362,7 +362,7 @@ if __name__ == "__main__":
     # Process each year sequentially, but leagues within each year concurrently
     for year_string in year_strings:
         # Not too many due to FBRef rate limiting
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        with ThreadPoolExecutor(max_workers=1) as executor:
             future_to_league = {executor.submit(process_league_year, year_string, league, table_mapping, args.write_type): league for league in args.leagues}
 
             for future in as_completed(future_to_league):
