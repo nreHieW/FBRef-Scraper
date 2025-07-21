@@ -332,7 +332,14 @@ if __name__ == "__main__":
         "--leagues",
         nargs="+",
         help="Leagues included are for eg ['EPL', 'La Liga', 'Serie A', 'Ligue 1', 'Bundesliga', 'Eredivisie', 'Primeira Liga']",
-        default=["EPL", "La Liga", "Serie A", "Ligue 1", "Bundesliga", "EFL Championship"],
+        default=[
+            "EPL",
+            "EFL Championship",
+            "La Liga",
+            "Serie A",
+            "Ligue 1",
+            "Bundesliga",
+        ],
     )
     parser.add_argument("--write_type", type=WriteType, help="Write Type", default=WriteType.WRITE_TRUNCATE)
     args = parser.parse_args()
