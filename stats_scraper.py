@@ -275,8 +275,9 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     penagainst = df["GA"].apply(lambda x: str(x).split()[-1].replace("(", "").replace(")", "") if (len(str(x).split()) > 1) else 0)
     df["GF"] = df["GF"].apply(lambda x: str(x).split("(")[0])
     df["GA"] = df["GA"].apply(lambda x: str(x).split("(")[0])
-    df.insert(10, "penfor", penfor)
-    df.insert(11, "penagainst", penagainst)
+    df.insert(10, "penfor", penfor.values)
+    df.insert(11, "penagainst", penagainst.values)
+
     # drop last row as it is the total row
     df = df.iloc[:-1]
 
