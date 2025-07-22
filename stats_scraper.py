@@ -264,7 +264,6 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
 
     df = pd.concat(dfs, axis=1)
     df = df.drop([x for x in df.columns.tolist() if ("Notes" in x) | ("Match_Report" in x)], axis=1)
-    df = df.T.drop_duplicates().T
     df.insert(1, "Squad", team)
     df = df.replace("Champions Lg", "Champions League").replace("Europa Lg", "Europa League")
     df = df.rename(columns={"Gf": "GF", "Ga": "GA"})
@@ -276,23 +275,25 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     df["GA"] = df["GA"].apply(lambda x: str(x).split("(")[0])
     df.insert(10, "penfor", penfor)
     df.insert(11, "penagainst", penagainst)
-    return df.apply(pd.to_numeric, errors="ignore").drop_duplicates()
+    # drop last row as it is the total row
+    df = df.iloc[:-1]
+
+    df = df.T.drop_duplicates().T
+    return df.drop_duplicates()
 
 
 def scrape_year(year: int, league: str) -> StatsScraperResult:
-    # with FBRefWrapper() as fb:
     fb = FBRefWrapper()
     league_results = scrape_league(year, league, fb)
     team_ids = dict(zip(league_results["matches"]["Home Team ID"].tolist(), league_results["matches"]["Home Team"].tolist()))
     match_logs = []
     for team_id in team_ids:
         match_logs.append(get_match_logs(team_id, year, team_ids[team_id], fb))
-    match_logs_clean = [df.reset_index(drop=True) for df in match_logs]
-    squad_logs = pd.concat(match_logs_clean, ignore_index=True)
+    squad_logs = pd.concat(match_logs, ignore_index=True)
+    squad_logs = squad_logs.apply(pd.to_numeric, errors="ignore")
 
     raw_results: StatsScraperResult = {"squad_logs": squad_logs, **league_results}
     processed_results = process_results(raw_results)
-    # fb.quit() is automatically called by the context manager
     return processed_results
 
 
