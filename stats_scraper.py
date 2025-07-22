@@ -268,6 +268,8 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     df = df.replace("Champions Lg", "Champions League").replace("Europa Lg", "Europa League")
     df = df.rename(columns={"Gf": "GF", "Ga": "GA"})
 
+    df = df.reset_index(drop=True)
+
     # Penalties are in the GF/GA columns of the form FT (PEN)
     penfor = df["GF"].apply(lambda x: str(x).split()[-1].replace("(", "").replace(")", "") if (len(str(x).split()) > 1) else 0)
     penagainst = df["GA"].apply(lambda x: str(x).split()[-1].replace("(", "").replace(")", "") if (len(str(x).split()) > 1) else 0)
