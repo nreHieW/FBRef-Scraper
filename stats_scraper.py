@@ -267,6 +267,8 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     df.insert(1, "Squad", team)
     df = df.replace("Champions Lg", "Champions League").replace("Europa Lg", "Europa League")
     df = df.rename(columns={"Gf": "GF", "Ga": "GA"})
+    df = df.T.drop_duplicates().T
+    df.drop_duplicates()
 
     df = df.reset_index(drop=True)
 
@@ -281,8 +283,7 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     # drop last row as it is the total row
     df = df.iloc[:-1]
 
-    df = df.T.drop_duplicates().T
-    return df.drop_duplicates()
+    return df
 
 
 def scrape_year(year: int, league: str) -> StatsScraperResult:
