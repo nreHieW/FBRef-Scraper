@@ -15,55 +15,69 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: setup-chromedriver
+        uses: nanasess/setup-chromedriver@v2.2.1    
+
+      - name: Install the project
+        run: uv sync --locked --all-extras --dev
       
-      # - name: setup-chromedriver
-      #   uses: nanasess/setup-chromedriver@v2.2.1  
+      - name: setup-chromedriver
+        uses: nanasess/setup-chromedriver@v2.2.1  
 
       - name: Installing package list
         run: apt list --installed    
-
-      - name: Installing all necessary packages
-        run: pip install pyvirtualdisplay
-        
-      - name: Install xvfb
-        run: sudo apt-get install xvfb
-
-      - name: Install Other Requirements
-        run: pip install -r requirements.txt
-
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v1'
-        with:
-          workload_identity_provider: '${{ secrets.GCP_WIP }}'
-          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
-
-      # - name: Setup Firefox
-      #   uses: browser-actions/setup-firefox@v1
       
-      - name: geckodriver/firefox
-        run: |
-          echo "geckodriver/firefox"
-          which geckodriver
-          geckodriver --version
-          which firefox
-          firefox --version
-      # need to run the virtual display
-      # - name: Configure Proxies
-      #   run: python engines/request_utils.py
+      - name: Run the scraping script
+        run: uv run test.py
 
-      - name: Running the Python script
-        env: 
-          GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
-        run: python event_data_scraper.py
+      # - name: Installing all necessary packages
+      #   run: pip install pyvirtualdisplay
         
-      - name: Commit and Push The Results
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          timestamp=$(date -u)
-          git commit -m "Latest data: ${timestamp}" || exit 0
-          git push
+      # - name: Install xvfb
+      #   run: sudo apt-get install xvfb
+
+      # - name: Install Other Requirements
+      #   run: pip install -r requirements.txt
+
+      # - id: 'auth'
+      #   uses: 'google-github-actions/auth@v1'
+      #   with:
+      #     workload_identity_provider: '${{ secrets.GCP_WIP }}'
+      #     service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+
+      # - name: 'Set up Cloud SDK'
+      #   uses: 'google-github-actions/setup-gcloud@v1'
+
+      # # - name: Setup Firefox
+      # #   uses: browser-actions/setup-firefox@v1
+      
+      # - name: geckodriver/firefox
+      #   run: |
+      #     echo "geckodriver/firefox"
+      #     which geckodriver
+      #     geckodriver --version
+      #     which firefox
+      #     firefox --version
+      # # need to run the virtual display
+      # # - name: Configure Proxies
+      # #   run: python engines/request_utils.py
+
+      # - name: Running the Python script
+      #   env: 
+      #     GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
+      #   run: python event_data_scraper.py
+        
+      # - name: Commit and Push The Results
+      #   run: |
+      #     git config --global user.name "github-actions[bot]"
+      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #     git add -A
+      #     timestamp=$(date -u)
+      #     git commit -m "Latest data: ${timestamp}" || exit 0
+      #     git push
