@@ -30,14 +30,21 @@ def _parse_match_stats_for_players(player_stats: pd.Series):
     return pd.concat(dfs, axis=1).iloc[:-1]
 
 
-def _find_team(row, mapping):
+def _find_team(row, mapping, stats_to_logs):
     log_player = row["Summary_Player"]
     home, away = row["Home_Team"], row["Away_Team"]
     stats_team = mapping[log_player]
-    if home in stats_team:
+
+    # Convert stats team names to logs team names for comparison
+    stats_team_converted = [stats_to_logs.get(team, team) for team in stats_team]
+
+    if home in stats_team_converted:
         return home
-    else:
+    elif away in stats_team_converted:
         return away
+    else:
+        # Fallback: return the first team from stats (converted to logs name)
+        return stats_to_logs.get(stats_team[0], stats_team[0]) if len(stats_team) > 0 else home
 
 
 def _possession_adjust(row: pd.Series, metric: str):
