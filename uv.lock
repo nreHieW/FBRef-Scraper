@@ -414,6 +414,7 @@ dependencies = [
     { name = "html5lib" },
     { name = "rapidfuzz" },
     { name = "scraperfc" },
+    { name = "selenium-stealth" },
     { name = "undetected-chromedriver" },
     { name = "webdriver-manager" },
 ]
@@ -429,6 +430,7 @@ requires-dist = [
     { name = "html5lib", specifier = ">=1.1" },
     { name = "rapidfuzz", specifier = ">=3.13.0" },
     { name = "scraperfc", specifier = ">=3.3.0" },
+    { name = "selenium-stealth", specifier = ">=1.0.6" },
     { name = "undetected-chromedriver", specifier = ">=3.5.5" },
     { name = "webdriver-manager", specifier = ">=4.0.2" },
 ]
@@ -1284,6 +1286,17 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b0/e6/646d0a41fb9a64572043c3de80be2a4941f2aeb578f273cf3dae54fc9437/selenium-4.34.2.tar.gz", hash = "sha256:0f6d147595f08c6d4bad87b34c39dcacb4650aedc78e3956c8eac1bb752a3854", size = 896309 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f3/2b/dee1c58bde0a747b2d75fa7282a190885a726fe95b18b8ce1dc52f9c0983/selenium-4.34.2-py3-none-any.whl", hash = "sha256:ea208f7db9e3b26e58c4a817ea9dd29454576d6ea55937d754df079ad588e1ad", size = 9410676 },
+]
+
+[[package]]
+name = "selenium-stealth"
+version = "1.0.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "selenium" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/ac/7877df8b819d54a4e317a093a0a9e0a38d21d884a7250aa713f2f0869442/selenium_stealth-1.0.6-py3-none-any.whl", hash = "sha256:b62da5452aa4a84f29a4dfb21a9696aff20788a7c570dd0b81bc04a940848b97", size = 32195 },
 ]
 
 [[package]]

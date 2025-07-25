@@ -9,6 +9,7 @@ dependencies = [
     "html5lib>=1.1",
     "rapidfuzz>=3.13.0",
     "scraperfc>=3.3.0",
+    "selenium-stealth>=1.0.6",
     "undetected-chromedriver>=3.5.5",
     "webdriver-manager>=4.0.2",
 ]
