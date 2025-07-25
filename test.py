@@ -7,5 +7,9 @@ display.start()
 options = ChromeOptions()
 options.add_argument("--proxy-server={}".format("8.219.97.248:80"))
 driver = uc.Chrome(headless=False, use_subprocess=False, options=options)
+
+driver.get("https://httpbin.org/ip")
+print(driver.page_source)
+
 driver.get("https://whoscored.com/")
 print(driver.page_source)
