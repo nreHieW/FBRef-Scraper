@@ -46,6 +46,9 @@ def _possession_adjust(row: pd.Series, metric: str):
     return row[metric] / opp_possession * 50
 
 
+import numpy as np
+
+
 def process_results(results: StatsScraperResult) -> StatsScraperResult:
     # Clean column names and remove duplicates across all dataframes
     for k, v in results.items():
@@ -82,10 +85,49 @@ def process_results(results: StatsScraperResult) -> StatsScraperResult:
     shots = results["shots"]
     squad_logs = results["squad_logs"]
     player_logs = results["player_logs"]
+    matches = results["matches"]
+
+    # Join player_logs with matches to get metadata like Stage, Home_Team, Away_Team
+    # First, create a mapping from Link to match metadata
+    match_metadata = matches[["Link", "Stage", "Home_Team", "Away_Team", "Date"]].copy()
+    match_metadata["Match_ID"] = match_metadata["Link"].apply(lambda x: x.split("/")[-2].strip())
+
+    # Merge player_logs with match metadata using Match ID
+    player_logs_with_metadata = player_logs.merge(match_metadata[["Match_ID", "Stage", "Home_Team", "Away_Team", "Date"]], left_on="Match_ID", right_on="Match_ID", how="left")
 
     # Filter to only include league matches (Matchweek games)
-    player_logs_league = player_logs[(player_logs["Stage"].str.contains("Matchweek"))]
-    squad_logs_league = squad_logs[squad_logs["Round"].str.contains("Matchweek")]
+    player_logs_league = player_logs_with_metadata[player_logs_with_metadata["Stage"].str.contains("Matchweek", na=False)]
+
+    # Create mapping from logs to stats -> replace home and away teams with stats teams
+    # We use stats team as the source of truth
+    logs_to_stats = {}
+    logs_teams = player_logs_league["Home_Team"].unique().tolist()
+    stats_teams = players["Standard_Squad"].unique().tolist()
+    for team in logs_teams:
+        most_similar = find_most_similar_string(team, stats_teams)
+        logs_to_stats[team] = most_similar
+        stats_teams.remove(most_similar)
+    assert len(logs_to_stats) == len(logs_teams)
+
+    # Filter squad_logs to league matches - check if Round column exists, otherwise skip filtering
+    if "Round" in squad_logs.columns:
+        squad_logs_league = squad_logs[squad_logs["Round"].str.contains("Matchweek", na=False)]
+    else:
+        # If Round column doesn't exist, use all squad_logs but filter out non-league competitions
+        squad_logs_league = squad_logs[~squad_logs["Comp"].str.contains("Champions|Europa|Cup", na=False) if "Comp" in squad_logs.columns else True]
+
+    assert sorted(logs_to_stats.keys()) == sorted(squad_logs_league["Squad"].unique().tolist())
+
+    # Create mapping from players to their teams for squad identification
+    player_names = player_logs_league["Summary_Player"].unique().tolist()
+    stats_team_mapping = {}
+    for player in player_names:
+        stats_team_mapping[player] = players[players["Standard_Player"] == player]["Standard_Squad"].values
+    # Create reverse mapping from stats teams to logs teams for proper comparison
+    stats_to_logs = {v: k for k, v in logs_to_stats.items()}
+
+    player_logs_league["Squad"] = player_logs_league.apply(lambda x: _find_team(x, stats_team_mapping, stats_to_logs), axis=1).map(logs_to_stats)
+    assert set(np.concatenate(list(stats_team_mapping.values()))) == set(player_logs_league["Squad"].unique()), "Stats team mapping values do not match unique squads in player logs"
 
     # Map team names between player logs and squad logs for consistency
     player_squad_logs_mapping = find_closest_matches(player_logs_league["Home_Team"].unique().tolist(), squad_logs_league["Squad"].unique().tolist())
@@ -97,48 +139,37 @@ def process_results(results: StatsScraperResult) -> StatsScraperResult:
     player_logs_league["Defense_Tackles_Tkl"] = player_logs_league["Summary_Performance_Tkl"]
     player_logs_league["Defense_Int"] = player_logs_league["Summary_Performance_Int"]
 
-    # Create mapping from players to their teams for squad identification
-    player_names = player_logs_league["Summary_Player"].unique().tolist()
-    stats_team_mapping = {}
-    for player in player_names:
-        stats_team_mapping[player] = players[players["Standard_Player"] == player]["Standard_Squad"].values
-
-    player_logs_league["Squad"] = player_logs_league.apply(lambda x: _find_team(x, stats_team_mapping), axis=1)
-
-    # Create mapping from logs to stats -> replace home and away teams with stats teams
-    logs_to_stats = {}
-    logs_teams = player_logs_league["Home_Team"].unique().tolist()
-    stats_teams = players["Standard_Squad"].unique().tolist()
-    for team in logs_teams:
-        most_similar = find_most_similar_string(team, stats_teams)
-        logs_to_stats[team] = most_similar
-        stats_teams.remove(most_similar)
-
-    assert len(logs_to_stats) == len(logs_teams)
-    assert sorted(logs_to_stats.keys()) == sorted(squad_logs_league["Squad"].unique().tolist())
-    print(f"Created mapping of {len(logs_to_stats)} teams from logs to stats")
-
     # Apply team name mapping to standardize across datasets
     player_logs_league["Home_Team"] = player_logs_league["Home_Team"].map(logs_to_stats)
     player_logs_league["Away_Team"] = player_logs_league["Away_Team"].map(logs_to_stats)
 
-    # Create unique match identifiers for merging player and squad data
-    player_logs_league["Match_String"] = player_logs_league.apply(lambda row: "".join(sorted([row["Home_Team"], row["Away_Team"]])), axis=1)
-    squad_logs_league["Match_String"] = squad_logs_league.apply(lambda row: "".join(sorted([row["Squad"], row["Opponent"]])), axis=1)
+    # Get unique match metadata from player_logs (which already has correct Match_IDs)
+    # This gives us the mapping: Date + Squad -> Match_ID
+    match_squad_mapping = player_logs_league[["Date", "Squad", "Match_ID"]].drop_duplicates()
 
-    # Merge player logs with squad possession data using match and squad identifiers
-    merged_df = player_logs_league.merge(squad_logs_league[["Squad", "Match_String", "Poss"]], on=["Match_String", "Squad"], how="left")
+    # Normalize dates to ensure consistent format for merging
+    match_squad_mapping["Date"] = pd.to_datetime(match_squad_mapping["Date"]).dt.date
+    squad_logs_league.loc[:, "Date"] = pd.to_datetime(squad_logs_league["Date"]).dt.date
+    squad_logs_league.loc[:, "Squad"] = squad_logs_league["Squad"].map(logs_to_stats)
 
-    # Remove duplicate player entries per match and log team counts for verification
-    merged_df = merged_df.drop_duplicates(subset=["Stage", "Summary_Player", "Squad"])
+    assert set(squad_logs_league["Squad"].unique().tolist()) == set(
+        logs_to_stats.values()
+    ), f"Squads in squad_logs_league {squad_logs_league['Squad'].unique().tolist()}\ndo not match squads in\nmatch_squad_mapping {logs_to_stats.values()}"
 
-    # for logging purposes
-    for team in merged_df["Squad"].unique().tolist():
-        print(f"Found {len(merged_df[merged_df['Squad'] == team])} matches for {team}")
+    # Join squad_logs with match IDs using Date and Squad
+    squad_logs_with_match_id = squad_logs_league.merge(match_squad_mapping[["Date", "Squad", "Match_ID"]], on=["Date", "Squad"], how="left")
+    # return squad_logs_with_match_id, match_squad_mapping, logs_to_stats
 
-    print(f"Length of merged df {len(merged_df)} and length of player logs {len(player_logs_league)}")
-    # assert len(merged_df) == len(player_logs_league), f"Length of merged df {len(merged_df)} does not match length of player logs {len(player_logs_league)}"
-    # Length of merged df 56077 does not match length of player logs 56079
+    # Merge player logs with squad possession data using Match ID and squad identifiers
+    merged_df = player_logs_league.merge(squad_logs_with_match_id[["Squad", "Match_ID", "Poss"]], on=["Match_ID", "Squad"], how="left")
+    assert (
+        players["Standard_Player"].nunique() == player_logs_league["Summary_Player"].nunique()
+    ), f"Number of players in players {players['Standard_Player'].nunique()} does not match number of players in player logs {player_logs_league['Summary_Player'].nunique()}"
+    merged_df = merged_df.merge(players[["Standard_Player", "Standard_Player_ID"]], left_on="Summary_Player", right_on="Standard_Player", how="left")
+
+    # Remove duplicate player entries per match using available columns
+    # Use Match_ID and Summary_Player instead of Stage since we have them
+    merged_df = merged_df.drop_duplicates(subset=["Match_ID", "Summary_Player", "Squad"])
 
     # Calculate possession-adjusted metrics for defensive and passing statistics
     to_adjust_metrics = [x for x in merged_df.columns if ("Defense" in x) or (x.startswith("Passing"))]
@@ -148,22 +179,26 @@ def process_results(results: StatsScraperResult) -> StatsScraperResult:
 
     # Aggregate possession-adjusted metrics by player across all matches
     padj_df = (
-        merged_df[["Summary_Player", "Summary_Player_ID"] + [f"Padj_{x}" for x in [y.replace("Defense", "Defensive") for y in to_adjust_metrics]]]
-        .groupby(["Summary_Player", "Summary_Player_ID"])
+        merged_df[["Summary_Player", "Standard_Player_ID"] + [f"Padj_{x}" for x in [y.replace("Defense", "Defensive") for y in to_adjust_metrics]]]
+        .groupby(["Summary_Player", "Standard_Player_ID"])
         .sum()
         .reset_index()
     )
-    player_df = players.merge(padj_df, left_on=["Standard_Player", "Standard_Player_ID"], right_on=["Summary_Player", "Summary_Player_ID"], how="left")
+    player_df = players.merge(padj_df, left_on=["Standard_Player", "Standard_Player_ID"], right_on=["Summary_Player", "Standard_Player_ID"], how="left")
 
     # Normalize all counting stats to per-90-minute rates for fair comparison
     to_normalize = [x for x in player_df.columns if ("90" not in x) and ("pct" not in x.lower()) and ("playing_time" not in x.lower())]
     minutes = "Standard_Playing_Time_90s"
     player_df = player_df.apply(pd.to_numeric, errors="ignore")
+    per_90_cols = {}
     for col in to_normalize:
         try:
-            player_df[col + "_Per_90"] = player_df[col] / player_df[minutes]
+            per_90_cols[col + "_Per_90"] = player_df[col] / player_df[minutes]
         except Exception as e:
-            print(col, e)
+            print("Error Normalizing", col, e)
+
+    if per_90_cols:
+        player_df = pd.concat([player_df, pd.DataFrame(per_90_cols)], axis=1)
 
     # Add accurate position data from external mapping spreadsheet
     sheet_id = "1GjjS9IRp6FVzVX5QyfmttMk8eYBtIzuZ_YIM0VWg8OY"
@@ -248,7 +283,6 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
         r = fb._get(newurl)
         # we can just handle the team since the opponent will be handled in the next iteration
         for_df = pd.read_html(StringIO(r.text))[0]
-        # for_df = format_column_names(for_df, prefix)
         cols = for_df.columns.tolist()
         parsed = []
         for col in cols:
