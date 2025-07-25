@@ -120,7 +120,7 @@ def find_closest_matches(list1: list, list2: list, min_similarity: float = 0.6, 
     return matches
 
 
-def find_most_similar_string(string: str, list_of_strings: list, min_similarity: float = 0.6, case_sensitive: bool = True, return_score: bool = False, limit: int = 1):
+def find_most_similar_string(string: str, list_of_strings: list, min_similarity: float = 0.6, case_sensitive: bool = True):
     """
     Find the most similar string(s) from a list of candidates.
 
@@ -129,16 +129,15 @@ def find_most_similar_string(string: str, list_of_strings: list, min_similarity:
         list_of_strings: List of candidate strings
         min_similarity: Minimum similarity score (0.0 to 1.0) to consider a match
         case_sensitive: Whether to consider case when matching
-        return_score: Whether to return similarity scores along with matches
-        limit: Maximum number of matches to return
 
     Returns:
-        If return_score=False: Best match string or None
-        If return_score=True: Tuple of (match, score) or None
-        If limit > 1: List of matches or list of (match, score) tuples
+        Tuple of (match, score)
+
+    Raises:
+        ValueError: If string or list_of_strings is empty, or if no match found above min_similarity
     """
     if not string or not list_of_strings:
-        return None if limit == 1 else []
+        raise ValueError("Input string and list_of_strings cannot be empty")
 
     # Clean input
     clean_string = str(string).strip()
@@ -149,19 +148,13 @@ def find_most_similar_string(string: str, list_of_strings: list, min_similarity:
         clean_list = [item.lower() for item in clean_list]
 
     # Get best matches with scores
-    results = process.extract(clean_string, list_of_strings, scorer=fuzz.WRatio, limit=limit)
+    results = process.extract(clean_string, list_of_strings, scorer=fuzz.WRatio)
 
     # Filter by minimum similarity
     filtered_results = [(match, score / 100.0) for match, score, _ in results if score / 100.0 >= min_similarity]
 
     if not filtered_results:
-        return None if limit == 1 else []
+        raise ValueError(f"No matches found for {string} in {list_of_strings}")
 
-    if limit == 1:
-        match, score = filtered_results[0]
-        return (match, score) if return_score else match
-    else:
-        if return_score:
-            return filtered_results
-        else:
-            return [match for match, _ in filtered_results]
+    match, score = filtered_results[0]
+    return match

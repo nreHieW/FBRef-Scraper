@@ -380,7 +380,7 @@ if __name__ == "__main__":
         nargs="+",
         help="Leagues included are for eg ['EPL', 'La Liga', 'Serie A', 'Ligue 1', 'Bundesliga', 'Eredivisie', 'Primeira Liga']",
         default=[
-            "EPL",
+            # "EPL",
             "EFL Championship",
             "La Liga",
             "Serie A",
