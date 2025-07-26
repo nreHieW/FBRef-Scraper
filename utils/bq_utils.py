@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from google.cloud import bigquery
 
+
 # check bigquery connection
 client = bigquery.Client(project=os.environ.get("GCP_PROJECT_NAME"))
 
@@ -45,7 +46,7 @@ def write_to_bq(df: pd.DataFrame, name: str, dataset_name: str, write_type: Writ
     except:
         job = client.load_table_from_dataframe(df, table, job_config=job_config)
         job.result()
-    print("Uploaded", name, "successfully of length", len(df))
+    print("Uploaded", name, "successfully of length", len(df), "to", dataset_name)
     table = client.get_table(table)  # Make an API request.
     print("New Length of {} rows and {} columns".format(table.num_rows, len(table.schema)))
     client.close()

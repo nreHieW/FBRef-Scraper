@@ -16,3 +16,10 @@ class ScrapeLeagueResult(TypedDict):
 
 class StatsScraperResult(ScrapeLeagueResult):
     squad_logs: pd.DataFrame
+
+
+class RawEventData(TypedDict):
+    matchCentreData: dict
+    matchCentreEventTypeJson: dict
+    matchId: int
+    formationIdNameMappings: dict

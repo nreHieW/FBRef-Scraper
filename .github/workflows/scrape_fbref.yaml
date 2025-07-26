@@ -35,7 +35,7 @@ jobs:
       - name: Run the scraping script (first 5 leagues)
         env: 
           GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
-        run: uv run stats_scraper.py --write_type "WRITE_TRUNCATE" --start 2022 --end 2025
+        run: uv run stats_scraper.py --start 2022 --end 2025
       
       - name: Commit and Push The Results
         run: |

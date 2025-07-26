@@ -1,15 +1,18 @@
 import argparse
 import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Dict, Tuple, List
 from io import StringIO
+from typing import Dict, List, Tuple
 
 import pandas as pd
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from engines.fbref import FBRefWrapper
-from utils.data_utils import merge_dataframes, format_column_names, find_closest_matches, find_most_similar_string
-from utils.types import ScrapeLeagueResult, StatsScraperResult
 from utils.bq_utils import WriteType, write_to_bq
+from utils.data_utils import find_closest_matches, find_most_similar_string, format_column_names, merge_dataframes
+from utils.types import ScrapeLeagueResult, StatsScraperResult
 
 
 def _process_stats(stats: List[Tuple[str, pd.DataFrame]]) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -110,10 +113,28 @@ def process_results(results: StatsScraperResult) -> StatsScraperResult:
     logs_to_stats = {}
     logs_teams = player_logs_league["Home_Team"].unique().tolist()
     stats_teams = players["Standard_Squad"].unique().tolist()
-    for team in logs_teams:
-        most_similar = find_most_similar_string(team, stats_teams)
-        logs_to_stats[team] = most_similar
-        stats_teams.remove(most_similar)
+
+    # Keep trying to map with progressively lower similarity thresholds
+    unmapped_logs_teams = logs_teams.copy()
+    available_stats_teams = stats_teams.copy()
+
+    for threshold in [0.6, 0.4, 0.2, 0.0]:
+        if not unmapped_logs_teams:
+            break
+
+        still_unmapped = []
+        for team in unmapped_logs_teams:
+            try:
+                most_similar = find_most_similar_string(team, available_stats_teams, min_similarity=threshold)
+                logs_to_stats[team] = most_similar
+                available_stats_teams.remove(most_similar)
+            except ValueError:
+                still_unmapped.append(team)
+
+        unmapped_logs_teams = still_unmapped
+
+        # Verify all teams were mapped (should be empty after 0.0 threshold)
+    assert not unmapped_logs_teams, f"Expected all teams to be mapped after trying all similarity thresholds. Unmapped: {unmapped_logs_teams}"
     assert len(logs_to_stats) == len(logs_teams)
 
     # Filter squad_logs to league matches - check if Round column exists, otherwise skip filtering
@@ -268,8 +289,12 @@ def scrape_league(year: int, league: str, fb: FBRefWrapper) -> ScrapeLeagueResul
         match_id = row["Link"].split("/")[-2].strip()
         home_player_stats["Match ID"] = match_id
         away_player_stats["Match ID"] = match_id
-        shots = format_column_names(row["Shots"]["Both"], "")
-        shots["Minute"] = shots["Minute"].astype(str)
+        shots = row["Shots"]["Both"]
+        if shots is not None:
+            shots = format_column_names(shots, "")
+            shots["Minute"] = shots["Minute"].astype(str)
+        else:
+            shots = pd.DataFrame()
         player_logs.append(pd.concat([home_player_stats, away_player_stats], ignore_index=True))
         shots_dfs.append(shots)
     matches.drop(columns=["Home Player Stats", "Away Player Stats", "Shots"], inplace=True)
@@ -342,33 +367,32 @@ def scrape_year(year: int, league: str) -> StatsScraperResult:
 
 
 def process_league_year(year_string: str, league: str, table_mapping: dict, write_type: WriteType) -> None:
-    """Process a single league-year combination and write results to BigQuery."""
-    year_suffix = year_string.split("-")[1]  # Get ending year (e.g., "2024" from "2023-2024")
+    year_suffix = year_string.replace("-", "_")
     print(f"Starting {year_string} {league}...")
 
-    try:
-        results = scrape_year(year_string, league)
+    # try:
+    results = scrape_year(year_string, league)
 
-        for k, v in results.items():
-            if k in table_mapping:
-                dataset_name, table_prefix = table_mapping[k]
-                if k == "shots":
-                    # E.g. Shots tables: Shots_2024
-                    table_name = f"{table_prefix}_{year_suffix}"
-                elif k == "squad_logs":
-                    # E.g. Squad match logs: Squad_Match_Logs_2024_EPL
-                    table_name = f"{table_prefix}_{year_suffix}_{league}"
-                else:
-                    # E.g. Stats tables: Players_2024_EPL, Against_2024_EPL, etc.
-                    table_name = f"{table_prefix}_{year_suffix}_{league}"
+    for k, v in results.items():
+        if k in table_mapping:
+            dataset_name, table_prefix = table_mapping[k]
+            if k == "shots":
+                # E.g. Shots tables: Shots_2024_2025
+                table_name = f"{table_prefix}_{year_suffix}"
+            elif k == "squad_logs":
+                # E.g. Squad match logs: Squad_Logs_2024_2025_EPL
+                table_name = f"{table_prefix}_{year_suffix}_{league}"
+            else:
+                # E.g. Stats tables: Players_2024_2025_EPL, Against_2024_2025_EPL, etc.
+                table_name = f"{table_prefix}_{year_suffix}_{league}"
 
-                write_to_bq(v, table_name, dataset_name, write_type)
+            write_to_bq(v, name=table_name, dataset_name=dataset_name, write_type=write_type)
 
-        print(f"Completed {year_string} {league}")
+    print(f"Completed {year_string} {league}")
 
-    except Exception as e:
-        print(f"Error processing {year_string} {league}: {e}")
-        raise
+    # except Exception as e:
+    #     print(f"Error processing {year_string} {league}: {e}")
+    #     raise e
 
 
 if __name__ == "__main__":
@@ -380,7 +404,7 @@ if __name__ == "__main__":
         nargs="+",
         help="Leagues included are for eg ['EPL', 'La Liga', 'Serie A', 'Ligue 1', 'Bundesliga', 'Eredivisie', 'Primeira Liga']",
         default=[
-            # "EPL",
+            "EPL",
             "EFL Championship",
             "La Liga",
             "Serie A",
@@ -388,7 +412,6 @@ if __name__ == "__main__":
             "Bundesliga",
         ],
     )
-    parser.add_argument("--write_type", type=WriteType, help="Write Type", default=WriteType.WRITE_TRUNCATE)
     args = parser.parse_args()
 
     years = range(args.start, args.end + 1)
@@ -397,8 +420,8 @@ if __name__ == "__main__":
     # (Dataset, Table)
     table_mapping = {
         "shots": ("Shots", "Shots"),
-        "squad_logs": ("Squad_Match_Logs", "Squad_Match_Logs"),
-        "player_logs": ("Stats", "Player_Logs"),
+        "squad_logs": ("Squad_Logs", "Squad_Logs"),
+        "player_logs": ("Player_Logs", "Player_Logs"),
         "squad": ("Stats", "Squad"),
         "squad_gk": ("Stats", "Squad_GK"),
         "against": ("Stats", "Against"),
@@ -410,9 +433,8 @@ if __name__ == "__main__":
 
     # Process each year sequentially, but leagues within each year concurrently
     for year_string in year_strings:
-        # Not too many due to FBRef rate limiting
-        # with ThreadPoolExecutor(max_workers=1) as executor:
-        #     future_to_league = {executor.submit(process_league_year, year_string, league, table_mapping, args.write_type): league for league in args.leagues}
+        # with ThreadPoolExecutor(max_workers=len(args.leagues)) as executor:
+        #     future_to_league = {executor.submit(process_league_year, year_string, league, table_mapping, WriteType.WRITE_TRUNCATE): league for league in args.leagues}
 
         #     for future in as_completed(future_to_league):
         #         league = future_to_league[future]
@@ -422,4 +444,4 @@ if __name__ == "__main__":
         #         #     print(f"Error with {year_string} {league}: {e}")
         #         future.result()
         for league in args.leagues:
-            process_league_year(year_string, league, table_mapping, args.write_type)
+            process_league_year(year_string, league, table_mapping, WriteType.WRITE_TRUNCATE)
