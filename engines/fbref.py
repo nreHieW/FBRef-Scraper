@@ -34,13 +34,27 @@ class FBRefWrapper(FBref):
         options.add_experimental_option("prefs", prefs)
         self.driver = self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-    def _get(self, url: str) -> requests.Response:
+    def _get(self, url: str, max_retries: int = 3) -> requests.Response:
         try:
-            return super()._get(url)
+            response = super()._get(url)
+            if response.status_code == 200:
+                return response
+            else:
+                print(f"Non-200 status code ({response.status_code}) for url {url}, retrying...")
+                if max_retries > 0:
+                    time.sleep(10)
+                    return self._get(url, max_retries - 1)
+                else:
+                    print(f"Max retries exceeded for url {url}, returning response with status {response.status_code}")
+                    return response
         except Exception as e:
             print("Error in _get for url", url, e, "retrying...")
-            time.sleep(10)
-            return self._get(url)
+            if max_retries > 0:
+                time.sleep(10)
+                return self._get(url, max_retries - 1)
+            else:
+                print(f"Max retries exceeded for url {url}, re-raising exception")
+                raise e
 
     def _driver_get(self, url: str) -> None:
         try:

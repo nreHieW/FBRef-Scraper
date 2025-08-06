@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple
 
 import pandas as pd
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 load_dotenv()
 
@@ -51,8 +52,10 @@ def _find_team(row, mapping, stats_to_logs):
 
 
 def _possession_adjust(row: pd.Series, metric: str):
-    opp_possession = 100 - row["Poss"]
-    assert opp_possession >= 0, f"{row['Poss']} is not a valid possession value for metric {metric}"
+    # some competitions dont have possession data so we use 50%
+    poss = 50 if pd.isna(row["Poss"]) else row["Poss"]
+    opp_possession = 100 - poss
+    assert opp_possession >= 0, f"{poss} is not a valid possession value for metric {metric}"
     return row[metric] / opp_possession * 50
 
 
@@ -284,6 +287,8 @@ def scrape_league(year: int, league: str, fb: FBRefWrapper) -> ScrapeLeagueResul
     shots_dfs = []
     player_logs = []
     for _, row in matches.iterrows():
+        if row["Home Player Stats"]["Keeper"] is None:
+            continue
         home_player_stats = _parse_match_stats_for_players(row["Home Player Stats"])
         away_player_stats = _parse_match_stats_for_players(row["Away Player Stats"])
         match_id = row["Link"].split("/")[-2].strip()
@@ -329,6 +334,7 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
         dfs.append(for_df)
 
     df = pd.concat(dfs, axis=1)
+    df = df.loc[:, ~df.columns.duplicated()]
     df = df.drop([x for x in df.columns.tolist() if ("Notes" in x) | ("Match_Report" in x)], axis=1)
     df.insert(1, "Squad", team)
     df = df.replace("Champions Lg", "Champions League").replace("Europa Lg", "Europa League")
@@ -338,11 +344,18 @@ def get_match_logs(team_id: str, year: int, team: str, fb: FBRefWrapper) -> pd.D
     # drop last row as it is the total row
     df = df.iloc[:-1]
     df = df.T.drop_duplicates().T
-    df.drop_duplicates()
+    df = df.drop_duplicates()
 
     # Penalties are in the GF/GA columns of the form FT (PEN)
+    df["GF"] = df["GF"].apply(lambda x: x[0] if isinstance(x, (list, np.ndarray)) else x)
+    df["GA"] = df["GA"].apply(lambda x: x[0] if isinstance(x, (list, np.ndarray)) else x)
+
+    df["GF"] = df["GF"].astype(str)
+    df["GA"] = df["GA"].astype(str)
+
     penfor = df["GF"].apply(lambda x: str(x).split()[-1].replace("(", "").replace(")", "") if (len(str(x).split()) > 1) else 0)
     penagainst = df["GA"].apply(lambda x: str(x).split()[-1].replace("(", "").replace(")", "") if (len(str(x).split()) > 1) else 0)
+
     df["GF"] = df["GF"].apply(lambda x: str(x).split("(")[0])
     df["GA"] = df["GA"].apply(lambda x: str(x).split("(")[0])
     df.insert(10, "penfor", penfor.values)
@@ -356,7 +369,7 @@ def scrape_year(year: int, league: str) -> StatsScraperResult:
     league_results = scrape_league(year, league, fb)
     team_ids = dict(zip(league_results["matches"]["Home Team ID"].tolist(), league_results["matches"]["Home Team"].tolist()))
     match_logs = []
-    for team_id in team_ids:
+    for team_id in tqdm(team_ids, desc="Scraping match logs"):
         match_logs.append(get_match_logs(team_id, year, team_ids[team_id], fb))
     squad_logs = pd.concat(match_logs, ignore_index=True)
     squad_logs = squad_logs.apply(pd.to_numeric, errors="ignore")
@@ -404,7 +417,7 @@ if __name__ == "__main__":
         nargs="+",
         help="Leagues included are for eg ['EPL', 'La Liga', 'Serie A', 'Ligue 1', 'Bundesliga', 'Eredivisie', 'Primeira Liga']",
         default=[
-            "EPL",
+            # "EPL",
             "EFL Championship",
             "La Liga",
             "Serie A",
@@ -413,6 +426,8 @@ if __name__ == "__main__":
         ],
     )
     args = parser.parse_args()
+    assert args.start <= args.end, "Start year must be less than or equal to end year"
+    assert args.start >= 2017, "Start year must be greater than or equal to 2017"
 
     years = range(args.start, args.end + 1)
     year_strings = [f"{year}-{year+1}" for year in years]

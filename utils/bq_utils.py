@@ -3,6 +3,7 @@ import os
 import json
 import pandas as pd
 from google.cloud import bigquery
+from google.api_core.exceptions import NotFound
 
 
 # check bigquery connection
@@ -17,6 +18,16 @@ class WriteType(Enum):
 def write_to_bq(df: pd.DataFrame, name: str, dataset_name: str, write_type: WriteType = WriteType.APPEND):  # writes to bigquery, types supported are APPEND or WRITE_TRUNCATE
     project_id = os.environ.get("GCP_PROJECT_NAME")
     client = bigquery.Client(project=project_id)
+
+    dataset_id = f"{project_id}.{dataset_name}"
+    try:
+        dataset = client.get_dataset(dataset_id)
+    except NotFound:
+        print(f"Dataset {dataset_name} not found, creating it...")
+        dataset = bigquery.Dataset(dataset_id)
+        dataset = client.create_dataset(dataset, timeout=30)
+        print(f"Created dataset {dataset_name}")
+
     dataset = client.dataset(dataset_name)
     table = dataset.table(name)
     if write_type == WriteType.APPEND:
@@ -36,14 +47,15 @@ def write_to_bq(df: pd.DataFrame, name: str, dataset_name: str, write_type: Writ
     elif write_type == WriteType.WRITE_TRUNCATE:
         write_type = bigquery.WriteDisposition.WRITE_TRUNCATE
 
-    job_config = bigquery.LoadJobConfig(write_disposition=write_type)
     try:
+        job_config = bigquery.LoadJobConfig(write_disposition=write_type)
         json_data = df.to_json(orient="records")
         json_object = json.loads(json_data)
         job_config.source_format = bigquery.SourceFormat.NEWLINE_DELIMITED_JSON
         job = client.load_table_from_json(json_object, table, job_config=job_config)
         job.result()
     except:
+        job_config = bigquery.LoadJobConfig(write_disposition=write_type)
         job = client.load_table_from_dataframe(df, table, job_config=job_config)
         job.result()
     print("Uploaded", name, "successfully of length", len(df), "to", dataset_name)
